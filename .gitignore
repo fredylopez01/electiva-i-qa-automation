@@ -1,0 +1,31 @@
+# Dependencias
+node_modules/
+__pycache__/
+*.pyc
+
+# Variables de entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Artefactos generados por las herramientas (se versiona solo .gitkeep)
+**/reports/*
+!**/reports/.gitkeep
+**/screenshots/*
+!**/screenshots/.gitkeep
+**/videos/*
+!**/videos/.gitkeep
+**/drivers/*
+!**/drivers/.gitkeep
+
+# Sistemas operativos y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Se asegura que ninguna regla anterior excluya los marcadores de carpeta
+!**/.gitkeep
