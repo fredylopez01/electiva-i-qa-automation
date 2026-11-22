@@ -4,16 +4,23 @@ Repositorio del equipo para diseñar e implementar una suite completa de **prueb
 
 El objetivo es garantizar la estabilidad de los flujos críticos de negocio (checkout) y evaluar el comportamiento del sistema ante condiciones de alta demanda de infraestructura.
 
+## Plataforma seleccionada
+
+- **Sitio web objetivo:** [PrestaShop Demo](https://demo.prestashop.com/) (elegido entre las opciones del enunciado).
+- **Etapas impactadas:** Etapa 1 (E2E web) y Etapa 4 (pruebas de rendimiento).
+- **Herramienta de carga:** Apache JMeter.
+- Decisión registrada en [`docs/decisiones.md`](./docs/decisiones.md).
+
 ## Requisitos del reto
 
 El enunciado oficial está en [`Reto_ElectivaI_13112026.pdf`](./Reto_ElectivaI_13112026.pdf). Resumen de las 4 etapas:
 
 | Etapa | Tipo de prueba | Herramienta | Carpeta |
 | --- | --- | --- | --- |
-| 1 | E2E web: checkout + al menos 3 pruebas negativas | Cypress (JavaScript) | [`tests/e2e-web/`](./tests/e2e-web/) |
+| 1 | E2E web sobre PrestaShop: checkout + al menos 3 pruebas negativas | Cypress (JavaScript) | [`tests/e2e-web/`](./tests/e2e-web/) |
 | 2 | Funcional móvil: checkout *happy path* | Appium + emulador | [`tests/mobile/`](./tests/mobile/) |
 | 3 | API Testing: al menos 20 pruebas | Postman + Newman | [`tests/api/`](./tests/api/) |
-| 4 | Rendimiento: carga (10/20/50), estrés (2 pruebas) y desempeño (2 horas) | JMeter / Gatling | [`tests/performance/`](./tests/performance/) |
+| 4 | Rendimiento sobre PrestaShop: carga (10/20/50), estrés (2 pruebas) y desempeño (2 horas) | Apache JMeter | [`tests/performance/`](./tests/performance/) |
 
 ## Estructura del repositorio
 

@@ -1,6 +1,6 @@
 # Etapa 4 — Pruebas de rendimiento
 
-Evaluación del comportamiento no funcional de la plataforma seleccionada en la Etapa 1. La herramienta es libre (por ejemplo **Apache JMeter** o **Gatling**); se recomienda documentar la elegida en el informe.
+Evaluación del comportamiento no funcional de **PrestaShop Demo** (<https://demo.prestashop.com/>), la plataforma seleccionada en la Etapa 1. La herramienta elegida para las pruebas de carga es **Apache JMeter**.
 
 > Los planes y reportes se organizan por subtipo de prueba, no por herramienta ni por integrante.
 
@@ -24,11 +24,13 @@ Cada subtipo tiene:
 
 ## Ejecución
 
-Documentar aquí el comando exacto según la herramienta elegida, por ejemplo con JMeter:
+Comando general con JMeter:
 
 ```bash
 jmeter -n -t load/plans/<plan>.jmx -l load/reports/results.jtl -e -o load/reports/html
 ```
+
+Los planes de carga concretos (10, 20 y 50 usuarios) se documentan en `load/README.md`.
 
 ## Resultados y evidencias
 

@@ -7,7 +7,7 @@
 - Equipo: ______________________
 - Integrantes: ______________________
 - Fecha de entrega: ______________________
-- Sitio web evaluado: ______________________ (Venia Magento / PrestaShop)
+- Sitio web evaluado: https://demo.prestashop.com/ (PrestaShop Demo)
 - API(s) evaluadas: ______________________
 
 ## 1. Etapa 1 — Pruebas E2E (Cypress)
@@ -42,7 +42,7 @@
 
 ### 4.1 Pruebas de carga (10, 20 y 50 usuarios concurrentes)
 
-- Herramienta y configuración:
+- Herramienta y configuración: Apache JMeter
 - Resultados por nivel de concurrencia (tiempo de respuesta, throughput, errores):
 - Reporte: `results/performance/`
 - Informe de las 3 pruebas:

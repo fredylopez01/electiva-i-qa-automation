@@ -2,14 +2,11 @@
 
 Pruebas de extremo a extremo sobre la interfaz web, usando **Cypress con JavaScript**.
 
-## Sitio a evaluar
+## Sitio evaluado
 
-Elegir uno de los dos sitios del enunciado:
+**Sitio seleccionado:** <https://demo.prestashop.com/> (PrestaShop Demo).
 
-- <https://venia.magento.com/default/>
-- <https://demo.prestashop.com/>
-
-Registrar la URL elegida en `cypress.config.js` (o como variable de entorno).
+La URL se configura en `cypress.config.js` como `baseUrl` y puede sobrescribirse con la variable de entorno `CYPRESS_baseUrl`. El sitio carga la tienda dentro de un iframe, por lo que los comandos de soporte se encargan de esperar y entrar al frame antes de interactuar.
 
 ## Casos requeridos
 

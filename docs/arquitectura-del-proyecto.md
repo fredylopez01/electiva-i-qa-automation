@@ -10,6 +10,8 @@ El sistema bajo prueba es una plataforma de e-commerce con tres capas:
 
 La suite automatizada ataca cada capa con la herramienta adecuada y genera reportes y evidencias que alimentan el informe final.
 
+**Plataforma seleccionada:** [PrestaShop Demo](https://demo.prestashop.com/) para la interfaz web (Etapa 1) y las pruebas de rendimiento (Etapa 4). Las pruebas de carga se implementan con Apache JMeter. Ver [`docs/decisiones.md`](./decisiones.md).
+
 ## 2. Organización de carpetas
 
 La estructura está agrupada **por tipo de prueba**, no por integrante:
