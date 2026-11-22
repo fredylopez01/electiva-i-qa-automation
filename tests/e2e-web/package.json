@@ -1,0 +1,16 @@
+{
+  "name": "e2e-web-prestashop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pruebas E2E sobre PrestaShop Demo con Cypress",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:checkout": "cypress run --spec 'cypress/e2e/checkout/**/*.cy.js'",
+    "cy:run:negative": "cypress run --spec 'cypress/e2e/negative/**/*.cy.js'"
+  },
+  "devDependencies": {
+    "cypress": "^13.17.0",
+    "cypress-network-idle": "^1.14.1"
+  }
+}

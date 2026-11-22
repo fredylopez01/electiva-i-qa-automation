@@ -44,10 +44,23 @@ reports/              # Reportes de ejecución
 ## Ejecución
 
 ```bash
+cd tests/e2e-web
 npm install
-npx cypress open     # modo interactivo
-npx cypress run      # modo headless (CI)
+npm run cy:open              # modo interactivo
+npm run cy:run               # todas las pruebas en modo headless
+npm run cy:run:checkout      # solo happy path
+npm run cy:run:negative      # solo pruebas negativas
 ```
+
+La URL se puede sobrescribir con `CYPRESS_baseUrl=https://demo.prestashop.com/`.
+
+## Notas técnicas
+
+- La tienda se renderiza dentro de `iframe[title="Frame of demo shop"]`. Todos los comandos personalizados de `cypress/support/commands.js` entran al iframe antes de interactuar.
+- El demo muestra `#loadingMessage` mientras crea una tienda temporal; `openDemoShop()` espera a que desaparezca.
+- Los botones "Add to cart" se registran vía JavaScript asíncrono. `addProductToCart()` usa `cypress-network-idle` para esperar a que terminen los recursos `*.js` y evitar clics prematuros.
+- El correo de registro se genera con `Date.now()` porque cada ejecución usa una tienda nueva.
+- Los selectores pueden necesitar ajuste si el demo cambia de idioma o de versión de PrestaShop.
 
 ## Resultados y evidencias
 
