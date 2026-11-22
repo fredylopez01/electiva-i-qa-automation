@@ -6,7 +6,7 @@ Pruebas de extremo a extremo sobre la interfaz web, usando **Cypress con JavaScr
 
 **Sitio seleccionado:** <https://demo.prestashop.com/> (PrestaShop Demo).
 
-La URL se configura en `cypress.config.js` como `baseUrl` y puede sobrescribirse con la variable de entorno `CYPRESS_baseUrl`. El sitio carga la tienda dentro de un iframe, por lo que los comandos de soporte se encargan de esperar y entrar al frame antes de interactuar.
+La URL se configura en `cypress.config.js` como `baseUrl` y puede sobrescribirse con la variable de entorno `CYPRESS_baseUrl`. El sitio carga la tienda dentro de un iframe; los comandos de soporte esperan a que termine el loader, leen el `src` del iframe y visitan la tienda directamente para interactuar como en una página normal.
 
 ## Casos requeridos
 
@@ -56,10 +56,12 @@ La URL se puede sobrescribir con `CYPRESS_baseUrl=https://demo.prestashop.com/`.
 
 ## Notas técnicas
 
-- La tienda se renderiza dentro de `iframe[title="Frame of demo shop"]`. Todos los comandos personalizados de `cypress/support/commands.js` entran al iframe antes de interactuar.
+- La tienda se renderiza dentro de `iframe[title="Frame of demo shop"]`, pero `openDemoShop()` lee su `src` y visita la tienda directamente (`https://<subdominio>.demo.prestashop.com/en/`). Esto evita los errores de "element detached from DOM" al navegar dentro del iframe.
 - El demo muestra `#loadingMessage` mientras crea una tienda temporal; `openDemoShop()` espera a que desaparezca.
 - Los botones "Add to cart" se registran vía JavaScript asíncrono. `addProductToCart()` usa `cypress-network-idle` para esperar a que terminen los recursos `*.js` y evitar clics prematuros.
 - El correo de registro se genera con `Date.now()` porque cada ejecución usa una tienda nueva.
+- PrestaShop 8 usa ids `field-*` y botones con `data-link-action` (por ejemplo `field-birthday` y `save-customer`). En el registro se llena la fecha de nacimiento y no hay campo `confirmation`. Se marcan todos los checkboxes con `required` (`psgdpr` y `customer_privacy`); `optin` y `newsletter` se dejan sin marcar. Los selectores antiguos se mantienen como fallback.
+- El menú de usuario es un dropdown: `logout()` abre `#userMenuButton` si "Sign out" no está visible y después clica el enlace. El mismo botón (`aria-label="View my account (...)"`) se usa para verificar el login.
 - Los selectores pueden necesitar ajuste si el demo cambia de idioma o de versión de PrestaShop.
 
 ## Resultados y evidencias

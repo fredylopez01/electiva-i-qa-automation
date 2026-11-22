@@ -12,7 +12,7 @@ module.exports = defineConfig({
     viewportHeight: 900,
     // El demo tarda en crear una tienda temporal y cargar scripts dentro del iframe.
     defaultCommandTimeout: 15000,
-    pageLoadTimeout: 60000,
+    pageLoadTimeout: 120000,
     requestTimeout: 30000,
     retries: {
       runMode: 2,

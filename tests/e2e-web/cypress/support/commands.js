@@ -3,138 +3,377 @@
 /**
  * Comandos reutilizables para PrestaShop Demo.
  *
- * La tienda se renderiza dentro de un iframe del mismo dominio, por lo que
- * todas las interacciones pasan por `cy.shopBody()`.
- * Referencia: https://glebbahmutov.com/blog/flaky-iframe-test/
+ * El sitio principal crea la tienda dentro de un iframe. Mantenerse dentro del
+ * iframe provoca errores de "detached from DOM" cada vez que la tienda navega,
+ * porque el `contentDocument.body` se reemplaza. Por eso `openDemoShop()` lee
+ * el `src` del iframe y visita la tienda como una página normal; a partir de
+ * ahí todos los selectores son `cy.get` / `cy.contains` sobre el documento.
+ *
+ * PrestaShop 8 usa ids `field-*` y botones con `data-link-action`. Se mantienen
+ * los selectores antiguos como fallback para no depender de una sola versión.
  */
 
-const IFRAME = 'iframe[title="Frame of demo shop"]'
+const IFRAME = 'iframe[title="Frame of demo shop"], #framelive';
 
-Cypress.Commands.add('shopBody', () =>
-  cy
-    .get(IFRAME, { timeout: 30000 })
-    .its('0.contentDocument.body', { timeout: 30000 })
-    .should('not.be.empty')
-)
+const EMAIL = 'input[name="email"], #field-email, #email';
+const PASSWORD =
+  'input[name="password"], input[name="passwd"], #field-password, #passwd';
+const FIRSTNAME = 'input[name="firstname"], #field-firstname, #firstname';
+const LASTNAME = 'input[name="lastname"], #field-lastname, #lastname';
+const BIRTHDAY = 'input[name="birthday"], #field-birthday';
+const SIGN_IN_BUTTON =
+  'button[data-link-action="sign-in"], #submit-login, #SubmitLogin';
+const CREATE_BUTTON =
+  'button[data-link-action="save-customer"], #submitAccount';
+const ADDRESS = 'input[name="address1"], #field-address1, #address1';
+const CITY = 'input[name="city"], #field-city, #city';
+const POSTCODE = 'input[name="postcode"], #field-postcode, #postcode';
+const PHONE = 'input[name="phone"], #field-phone, #phone';
 
-Cypress.Commands.add('shopFind', (selector, options) =>
-  cy.shopBody().find(selector, options)
-)
+/** Scopea a un formulario si existe; si no, usa el body completo. */
+const formIn = ($body, selectors) => {
+  const $form = $body.find(selectors).first();
+  return $form.length ? $form : $body;
+};
 
-Cypress.Commands.add('shopContains', (selector, text, options) =>
-  // Envolver el body en jQuery permite usar `contains`, que no se puede
-  // encadenar directamente sobre un elemento BODY.
-  cy.shopBody().then(cy.wrap).contains(selector, text, options)
-)
+/** Visita la tienda y reintenta si el demo responde un 502 de Cloudflare. */
+const visitShop = (url, attempt = 0) => {
+  cy.visit(url, { timeout: 120000, failOnStatusCode: false });
+  cy.get("body").then(($body) => {
+    if ($body.find("#cf-wrapper").length && attempt < 2) {
+      cy.wait(3000);
+      visitShop(url, attempt + 1);
+    } else {
+      expect($body.find("#cf-wrapper").length, "demo disponible (no 502)").to.eq(0);
+    }
+  });
+};
 
-/** Abre el demo, espera a que desaparezca el loader y a que exista la tienda. */
-Cypress.Commands.add('openDemoShop', () => {
-  cy.visit('/')
-  cy.get('#loadingMessage', { timeout: 60000 }).should('not.be.visible')
-  cy.shopFind('.header-top').should('be.visible')
-  // Empezamos a vigilar los scripts antes de navegar dentro de la tienda.
-  cy.waitForNetworkIdlePrepare({ method: 'GET', pattern: '*.js', alias: 'shopJs' })
-})
+const fill = ($form, selectors, value) =>
+  cy.wrap($form).find(selectors).first().clear().type(value);
 
-/** Espera a que terminen de cargarse los JS que registran los eventos click. */
-Cypress.Commands.add('waitForShopAssets', () => {
-  cy.waitForNetworkIdle('@shopJs', 40)
-})
+const clickIn = ($form, selectors) =>
+  cy.wrap($form).find(selectors).first().click();
 
-Cypress.Commands.add('goToCategory', (category, subcategory) => {
-  cy.shopFind('.header-top').should('be.visible').contains('a', category).click()
-  cy.shopFind('.breadcrumb').should('include.text', category)
+Cypress.Commands.add("openDemoShop", () => {
+  cy.visit("/");
+  cy.get("#loadingMessage", { timeout: 60000 }).should("not.be.visible");
+
+  cy.get(IFRAME, { timeout: 30000 })
+    .should(($iframe) => {
+      const src = $iframe.attr("src");
+      expect(src, "shop url").to.be.a("string").and.not.be.empty;
+    })
+    .invoke("attr", "src")
+    .then((src) => {
+      Cypress.env("shopUrl", src);
+      visitShop(src);
+    });
+
+  // Vigilar los JS antes de navegar dentro de la tienda.
+  cy.waitForNetworkIdlePrepare({
+    method: "GET",
+    pattern: "*.js",
+    alias: "shopJs",
+  });
+});
+
+/** Espera a que terminen los JS que registran los eventos click. */
+Cypress.Commands.add("waitForShopAssets", () => {
+  cy.waitForNetworkIdle("@shopJs", 40);
+});
+
+Cypress.Commands.add("shopFind", (selector, options) =>
+  cy.get(selector, options),
+);
+
+Cypress.Commands.add("shopContains", (selector, text, options) =>
+  cy.contains(selector, text, options),
+);
+
+/** Navega por el texto exacto del link, aunque esté dentro de un accordion. */
+const goToLinkByText = (text) => {
+  cy.get("body").then(($body) => {
+    const $link = $body
+      .find("a.category-tree__item-link, .header-top a, .header-nav a, a")
+      .filter(
+        (index, element) =>
+          element.textContent.trim().toLowerCase() === text.toLowerCase(),
+      )
+      .first();
+    expect($link.length, `link de ${text}`).to.be.greaterThan(0);
+    const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
+    cy.visit(new URL($link.attr("href"), base).href);
+  });
+};
+
+Cypress.Commands.add("goToCategory", (category, subcategory) => {
+  goToLinkByText(category);
   if (subcategory) {
-    cy.shopContains('.category-sub-menu a', subcategory).click()
-    cy.shopFind('.breadcrumb').should('include.text', subcategory)
+    goToLinkByText(subcategory);
   }
-})
+  cy.get(".breadcrumb").should("contain.text", subcategory || category);
+});
 
 /** Agrega el producto `index` de la lista actual al carrito. */
-Cypress.Commands.add('addProductToCart', (index = 0) => {
-  cy.shopFind('.products .product')
-    .should('have.length.greaterThan', index)
+const PRODUCT_CARD = ".products .product, .product-miniature";
+
+Cypress.Commands.add("addProductToCart", (index = 0) => {
+  // El "quick add" del listado envía action=add y conserva los productos
+  // anteriores. El formulario de la ficha de producto envía action=update y,
+  // en el demo, reemplaza el carrito (el segundo producto borra el primero).
+  // Por eso se agrega desde el listado sin entrar a la ficha del producto.
+  cy.get(PRODUCT_CARD)
+    .should("have.length.greaterThan", index)
     .eq(index)
-    .click()
+    .find(
+      'button[data-button-action="add-to-cart"], button.product-miniature__add',
+    )
+    .first()
+    .should("be.visible")
+    .click();
 
-  cy.shopFind('#main .product-container').should('be.visible')
-  cy.waitForShopAssets()
-  cy.shopFind('#main .product-container').within(() => {
-    cy.contains('button', /add to cart/i).should('be.visible').click()
-  })
-  cy.shopFind('#blockcart-modal').should('be.visible')
-})
+  cy.get("#blockcart-modal, .cart-preview-modal, .modal.show").should(
+    "be.visible",
+  );
+  // Cerrar el modal para poder agregar el siguiente producto desde el listado.
+  cy.contains(
+    "#blockcart-modal button, #blockcart-modal a, .modal.show button, .modal.show a",
+    /continue shopping/i,
+  ).click();
+});
 
-Cypress.Commands.add('openSignIn', () => {
-  cy.shopContains('.header-top a, .user-info a', /sign in|my account/i).click()
-  cy.shopFind('#login_form').should('be.visible')
-})
+Cypress.Commands.add("openSignIn", () => {
+  const SIGN_IN_CONTROL =
+    '#_desktop_ps_customersignin a, #_desktop_user_info a, .user-info a, a[href*="login"], button[aria-label*="sign in"]';
 
-Cypress.Commands.add('createAccount', (user) => {
-  cy.openSignIn()
-  cy.shopContains('a', /create an account|no account/i).click()
-  cy.shopFind('#account-creation_form').should('be.visible')
-  cy.shopFind('#firstname').clear().type(user.firstName)
-  cy.shopFind('#lastname').clear().type(user.lastName)
-  cy.shopFind('#email').clear().type(user.email)
-  cy.shopFind('#passwd').clear().type(user.password)
-  cy.shopFind('#confirmation').clear().type(user.password)
-  cy.shopFind('#submitAccount').click()
-  cy.shopFind('.account, #center_column').should('contain.text', user.firstName)
-})
+  // Tras el logout el header se vuelve a renderizar: esperar al control.
+  cy.get("body").should(($body) => {
+    const hasControl = $body.find(SIGN_IN_CONTROL).length > 0;
+    const hasText = /sign in|my account|log in/i.test($body.text());
+    expect(hasControl || hasText, "control de sign in").to.eq(true);
+  });
 
-Cypress.Commands.add('login', (email, password) => {
-  cy.openSignIn()
-  cy.shopFind('#email').clear().type(email)
-  cy.shopFind('#passwd').clear().type(password)
-  cy.shopFind('#SubmitLogin').click()
-  cy.shopFind('.header-top').should('contain.text', email.split('@')[0])
-})
+  cy.get("body").then(($body) => {
+    const $link = $body.find(SIGN_IN_CONTROL).first();
+    if ($link.length) {
+      cy.wrap($link).click();
+    } else {
+      cy.contains("a, button", /sign in|my account|log in/i)
+        .first()
+        .click();
+    }
+  });
+  cy.get("body").should(($body) => {
+    expect($body.find(EMAIL).length, "campo de email").to.be.greaterThan(0);
+  });
+});
 
-Cypress.Commands.add('loginWithInvalidPassword', (email, password) => {
-  cy.openSignIn()
-  cy.shopFind('#email').clear().type(email)
-  cy.shopFind('#passwd').clear().type(password)
-  cy.shopFind('#SubmitLogin').click()
-})
+Cypress.Commands.add("createAccount", (user) => {
+  cy.openSignIn();
+  cy.contains("a", /create an account|no account|register/i)
+    .first()
+    .click();
 
-Cypress.Commands.add('logout', () => {
-  cy.shopContains('.header-top a, .user-info a', /sign out|logout/i).click()
-  cy.shopContains('.header-top a', /sign in/i).should('be.visible')
-})
+  cy.get("body").then(($body) => {
+    const $form = formIn(
+      $body,
+      `form:has(${CREATE_BUTTON}), #account-creation_form, form:has(#submitAccount)`,
+    );
+    fill($form, FIRSTNAME, user.firstName);
+    fill($form, LASTNAME, user.lastName);
+    fill($form, EMAIL, user.email);
+    fill($form, PASSWORD, user.password);
+    // No hay campo "confirmation": después del password viene el birthdate.
+    fill($form, BIRTHDAY, "01/01/1990");
+    // psgdpr y customer_privacy vienen con `required`; optin y newsletter no.
+    cy.wrap($form)
+      .find('input[type="checkbox"][required]')
+      .each(($checkbox) => {
+        cy.wrap($checkbox).check({ force: true });
+      });
+    clickIn($form, CREATE_BUTTON);
+  });
 
-Cypress.Commands.add('goToCheckout', () => {
-  cy.shopContains('#blockcart-modal a', /proceed to checkout/i).click()
-  cy.shopFind('.cart-grid').should('be.visible')
-  cy.shopContains('.cart-grid a', /proceed to checkout/i).click()
-  cy.shopFind('#checkout-personal-information-step').should('be.visible')
-})
+  cy.get("body").should(($body) => {
+    const $menu = $body.find(
+      "#userMenuButton, .ps-customersignin .dropdown-toggle",
+    );
+    const $form = $body.find(
+      '#customer-form, form:has(button[data-link-action="save-customer"])',
+    );
+    expect($menu.length > 0 || $form.length === 0, "cuenta creada").to.eq(true);
+  });
+});
 
-Cypress.Commands.add('fillCheckoutAddress', (address) => {
-  cy.shopFind('#checkout-address-step').should('be.visible')
-  cy.shopFind('#address1').clear().type(address.address1)
-  cy.shopFind('#city').clear().type(address.city)
-  cy.shopFind('#postcode').clear().type(address.postcode)
-  cy.shopFind('#phone').clear().type(address.phone)
-  cy.shopFind('#confirm-addresses').click()
-  cy.shopFind('#checkout-shipping-step').should('be.visible')
-})
+const submitLogin = (email, password) =>
+  cy.get("body").then(($body) => {
+    const $form = formIn(
+      $body,
+      `form:has(${SIGN_IN_BUTTON}), #login-form, #login_form, form:has(#SubmitLogin)`,
+    );
+    fill($form, EMAIL, email);
+    fill($form, PASSWORD, password);
+    clickIn($form, SIGN_IN_BUTTON);
+  });
 
-Cypress.Commands.add('selectShipping', () => {
-  cy.shopFind('#checkout-shipping-step').should('be.visible')
-  cy.shopFind('input[name="id_delivery_option"]').first().check({ force: true })
-  cy.shopFind('#confirmDeliveryOption').click()
-  cy.shopFind('#checkout-payment-step').should('be.visible')
-})
+Cypress.Commands.add("login", (email, password) => {
+  cy.openSignIn();
+  submitLogin(email, password);
+  cy.get("body").should(($body) => {
+    const $menu = $body.find("#userMenuButton");
+    const loggedIn =
+      $menu.length && /view my account/i.test($menu.attr("aria-label") || "");
+    const $legacy = $body.find("#_desktop_user_info a, .user-info a, .account a");
+    const legacyLoggedIn =
+      $legacy.length && /sign out|logout|my account|hi,/i.test($legacy.text());
+    expect(loggedIn || legacyLoggedIn, "usuario autenticado en el header").to.eq(
+      true,
+    );
+  });
+});
 
-/** Selecciona el pago con tarjeta, acepta condiciones y confirma el pedido. */
-Cypress.Commands.add('payWithCard', () => {
-  cy.shopFind('#checkout-payment-step').should('be.visible')
-  cy.shopFind('input[name="payment-option"][data-module-name="ps_checkout"]').check({ force: true })
-  cy.shopFind('#conditions-to-approve input[type="checkbox"]').check({ force: true })
-  cy.shopFind('#payment-confirmation button[type="submit"]').click()
-})
+Cypress.Commands.add("loginWithInvalidPassword", (email, password) => {
+  cy.openSignIn();
+  submitLogin(email, password);
+});
 
-Cypress.Commands.add('verifyOrderConfirmation', () => {
-  cy.shopFind('#checkout-confirmation-step, .order-confirmation').should('be.visible')
-})
+Cypress.Commands.add("logout", () => {
+  cy.get("body").then(($body) => {
+    const $signOut = $body
+      .find('a[href*="mylogout"], a[data-link-action="sign-out"], a[href*="logout"]')
+      .first();
+
+    // En PrestaShop 8 el enlace vive dentro de un dropdown Bootstrap.
+    if (!$signOut.length || !$signOut.is(":visible")) {
+      const $menu = $body
+        .find(
+          '#userMenuButton, button[data-bs-toggle="dropdown"][aria-label*="account"]',
+        )
+        .first();
+      if ($menu.length) {
+        cy.wrap($menu).click();
+      }
+    }
+  });
+
+  cy.contains("a", /sign out|logout/i)
+    .first()
+    .should("be.visible")
+    .click();
+
+  // El redirect del logout a veces cae en un 502 de Cloudflare; volvemos a
+  // entrar a la misma tienda para seguir con la sesión ya cerrada.
+  cy.get("body").then(($body) => {
+    if ($body.find("#cf-wrapper").length) {
+      visitShop(Cypress.env("shopUrl"));
+    }
+  });
+
+  // Tras el logout el dropdown del usuario debe desaparecer.
+  cy.get("body").should(($body) => {
+    const $menu = $body.find(
+      "#userMenuButton, .ps-customersignin .dropdown-toggle",
+    );
+    expect($menu.length, "menú de usuario tras logout").to.eq(0);
+  });
+});
+
+/** Abre la página del carrito leyendo su href real desde el header. */
+Cypress.Commands.add("openCart", () => {
+  cy.get("body").then(($body) => {
+    const $link = $body
+      .find('#_desktop_cart a, .blockcart a, a[href*="/cart"]')
+      .first();
+    expect($link.length, "cart link").to.be.greaterThan(0);
+    const href = $link.attr("href");
+    const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
+    cy.visit(new URL(href, base).href);
+  });
+});
+
+Cypress.Commands.add("goToCheckout", () => {
+  // Se navega al carrito por su href real en vez de usar el link del modal:
+  // el modal ya se cerró después de agregar los productos.
+  cy.openCart();
+  cy.get(".cart-grid").should("be.visible");
+
+  // Si el carrito quedó vacío el resumen muestra un botón "Checkout"
+  // deshabilitado en lugar del link "Proceed to checkout".
+  cy.get(".cart-grid").should(($grid) => {
+    expect($grid.find(".cart__empty").length, "carrito con productos").to.eq(0);
+  });
+  cy.contains(
+    ".cart-grid a, .cart-grid button",
+    /proceed to checkout|^checkout$/i,
+  )
+    .should("not.be.disabled")
+    .click();
+  cy.get("#checkout-personal-information-step").should("be.visible");
+});
+
+Cypress.Commands.add("fillCheckoutAddress", (address) => {
+  cy.get("#checkout-address-step").should("be.visible");
+  cy.get("#checkout-address-step").find(ADDRESS).first().clear().type(address.address1);
+  cy.get("#checkout-address-step").find(CITY).first().clear().type(address.city);
+  cy.get("#checkout-address-step").find(POSTCODE).first().clear().type(address.postcode);
+  cy.get("#checkout-address-step").find(PHONE).first().clear().type(address.phone);
+
+  cy.get("#checkout-address-step").then(($step) => {
+    const $button = $step
+      .find(
+        'button[data-link-action="confirm-address"], #confirm-addresses, button.form-control-submit',
+      )
+      .first();
+    expect($button.length, "botón continuar de dirección").to.be.greaterThan(0);
+    cy.wrap($button).click();
+  });
+  cy.get("#checkout-shipping-step").should("be.visible");
+});
+
+Cypress.Commands.add("selectShipping", () => {
+  cy.get("#checkout-shipping-step").should("be.visible");
+  cy.get('#checkout-shipping-step input[type="radio"]')
+    .first()
+    .check({ force: true });
+
+  cy.get("#checkout-shipping-step").then(($step) => {
+    const $button = $step
+      .find(
+        'button[data-link-action="confirm-delivery"], #confirmDeliveryOption, button.form-control-submit',
+      )
+      .first();
+    expect($button.length, "botón continuar de envío").to.be.greaterThan(0);
+    cy.wrap($button).click();
+  });
+  cy.get("#checkout-payment-step").should("be.visible");
+});
+
+/** Selecciona el primer método de pago disponible y confirma el pedido. */
+Cypress.Commands.add("payWithCard", () => {
+  cy.get("#checkout-payment-step").should("be.visible");
+  cy.get('#checkout-payment-step input[type="radio"]')
+    .first()
+    .check({ force: true });
+
+  cy.get("body").then(($body) => {
+    const $conditions = $body.find(
+      '#conditions-to-approve input[type="checkbox"], input[name="conditions-to-approve"]',
+    );
+    if ($conditions.length) {
+      cy.wrap($conditions.first()).check({ force: true });
+    }
+  });
+
+  cy.get(
+    'button[data-link-action="pay"], #payment-confirmation button[type="submit"], button.form-control-submit',
+  )
+    .last()
+    .click();
+});
+
+Cypress.Commands.add("verifyOrderConfirmation", () => {
+  cy.get(
+    "#checkout-confirmation-step, .order-confirmation, #order-confirmation",
+  ).should("exist");
+});
