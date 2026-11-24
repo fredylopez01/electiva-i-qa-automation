@@ -1,0 +1,30 @@
+[
+  {
+    "iterationLabel": "Tunja - usuario 1 - martillos",
+    "userId": 1,
+    "postTitle": "Reto final Electiva I - post iteracion 1",
+    "objectName": "QA Laptop UPTC 1",
+    "objectYear": 2024,
+    "objectPrice": 1849.99,
+    "latitude": 5.5353,
+    "longitude": -73.3678,
+    "city": "Tunja",
+    "searchTerm": "hammer",
+    "personQuantity": 3,
+    "locale": "es_ES"
+  },
+  {
+    "iterationLabel": "Bogota - usuario 7 - alicates",
+    "userId": 7,
+    "postTitle": "Reto final Electiva I - post iteracion 2",
+    "objectName": "QA Phone UPTC 2",
+    "objectYear": 2025,
+    "objectPrice": 999.5,
+    "latitude": 4.711,
+    "longitude": -74.0721,
+    "city": "Bogota",
+    "searchTerm": "pliers",
+    "personQuantity": 5,
+    "locale": "en_US"
+  }
+]

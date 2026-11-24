@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FakerAPI Person",
+  "type": "object",
+  "required": ["id", "firstname", "lastname", "email", "phone", "birthday", "gender", "address"],
+  "properties": {
+    "id": { "type": "integer" },
+    "firstname": { "type": "string" },
+    "lastname": { "type": "string" },
+    "email": { "type": "string", "pattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$" },
+    "phone": { "type": "string" },
+    "birthday": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "gender": { "type": "string" },
+    "address": {
+      "type": "object",
+      "required": ["street", "city", "country", "latitude", "longitude"],
+      "properties": {
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    }
+  }
+}
