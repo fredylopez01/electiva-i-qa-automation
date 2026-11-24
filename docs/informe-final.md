@@ -7,18 +7,22 @@
 - Equipo: ______________________
 - Integrantes: ______________________
 - Fecha de entrega: ______________________
-- Sitio web evaluado: https://demo.prestashop.com/ (PrestaShop Demo)
+- Sitio web evaluado: https://practicesoftwaretesting.com/ (Practice Software Testing / Toolshop). Alternativa usada por inestabilidad del demo de PrestaShop; la suite PrestaShop se conserva en el repositorio.
 - API(s) evaluadas: ______________________
 
 ## 1. Etapa 1 — Pruebas E2E (Cypress)
 
-- Herramienta y versión:
-- Casos happy path ejecutados (crear cuenta, login, agregar 2 productos, checkout):
-- Pruebas negativas ejecutadas (mínimo 3):
-- Resultados (ejecutadas / pasadas / fallidas):
-- Reporte: `results/e2e-web/`
-- Evidencias: `evidences/e2e-web/`
+- Herramienta y versión: Cypress 13.17.0 (Electron 118, Node.js 22.22.0).
+- Sitio evaluado: <https://practicesoftwaretesting.com/> (Toolshop). La suite PrestaShop se conserva como alternativa en `tests/e2e-web/cypress/e2e/checkout/` y `tests/e2e-web/cypress/e2e/negative/`.
+- Casos happy path ejecutados (crear cuenta, login, agregar 2 productos, checkout): 5 pasos en `tests/e2e-web/cypress/e2e/toolshop/checkout-happy-path.cy.js` — crear cuenta, iniciar sesión, agregar `Combination Pliers`, agregar `Pliers`, completar checkout con dirección y pago Cash on Delivery.
+- Pruebas negativas ejecutadas (mínimo 3): 3 casos en `tests/e2e-web/cypress/e2e/toolshop/negative/negative-checkout.cy.js` — credenciales incorrectas, checkout con carrito vacío, tarjeta inválida.
+- Resultados (ejecutadas / pasadas / fallidas): 8 ejecutadas / 8 pasadas / 0 fallidas.
+- Reporte: `results/e2e-web/toolshop-e2e-report.md`
+- Evidencias: `tests/e2e-web/cypress/videos/checkout-happy-path.cy.js.mp4`, `tests/e2e-web/cypress/videos/negative-checkout.cy.js.mp4`
 - Hallazgos:
+  - El demo renovó IDs de productos; se actualizaron a los IDs vigentes del catálogo.
+  - La UI puede aparecer en español; las pruebas usan `data-test` y aceptan mensajes en ambos idiomas.
+  - El checkout de Toolshop no expone un selector separado de método de envío; se documentó la adaptación en el reporte.
 
 ## 2. Etapa 2 — Pruebas móviles (Appium)
 
@@ -42,10 +46,23 @@
 
 ### 4.1 Pruebas de carga (10, 20 y 50 usuarios concurrentes)
 
-- Herramienta y configuración: Apache JMeter
+- Herramienta y configuración: Apache JMeter 5.x. Planes en `tests/performance/load/plans/` contra `https://practicesoftwaretesting.com/` (GET `/`, 1 iteración por usuario, ramp-up igual al número de usuarios, Cookie/Header Manager, Summary Report).
+- Ejecución:
+
+  ```bash
+  bash tests/performance/load/run-all.sh
+  ```
+
 - Resultados por nivel de concurrencia (tiempo de respuesta, throughput, errores):
-- Reporte: `results/performance/`
-- Informe de las 3 pruebas:
+
+  | Usuarios | Ramp-up | Promedio (ms) | P95 (ms) | Throughput | Error % | Estado |
+  | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+  | 10 | 10 s | _pendiente_ | _pendiente_ | _pendiente_ | _pendiente_ | Pendiente de ejecución |
+  | 20 | 20 s | _pendiente_ | _pendiente_ | _pendiente_ | _pendiente_ | Pendiente de ejecución |
+  | 50 | 50 s | _pendiente_ | _pendiente_ | _pendiente_ | _pendiente_ | Pendiente de ejecución |
+
+- Reporte: `results/performance/load-10/`, `results/performance/load-20/`, `results/performance/load-50/`
+- Informe de las 3 pruebas: consolidar los `Summary Report`/HTML de JMeter tras la ejecución y actualizar esta tabla. Las evidencias deben copiarse a `evidences/performance/`.
 
 ### 4.2 Pruebas de estrés (2 pruebas, recursos máximos)
 

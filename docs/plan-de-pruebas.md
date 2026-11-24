@@ -19,7 +19,8 @@ Diseñar e implementar una suite completa de pruebas automatizadas que valide lo
 
 ### Etapa 1 — E2E web (Cypress)
 
-**Sitio seleccionado:** <https://demo.prestashop.com/> (PrestaShop Demo). Esta decisión aplica a la Etapa 1 y a la Etapa 4; la Etapa 2 usa el mismo flujo sobre la PWA/app móvil.
+**Sitio seleccionado originalmente:** <https://demo.prestashop.com/> (PrestaShop Demo).  
+**Alternativa usada por inestabilidad del demo:** <https://practicesoftwaretesting.com/> (Practice Software Testing / Toolshop). La suite de PrestaShop se conserva en el repositorio; la ejecución validada para el entregable se documenta con Toolshop.
 
 Flujo *happy path*, ejecutado en este orden:
 
@@ -58,7 +59,7 @@ Automatizar **al menos 20 pruebas de API diferentes**. APIs sugeridas por el enu
 | Estrés | 2 pruebas configurando los recursos máximos de la máquina de prueba. | `tests/performance/stress/` |
 | Desempeño | Pruebas continuas por al menos 2 horas con 20–50 usuarios concurrentes. | `tests/performance/endurance/` |
 
-**Objetivo de las pruebas de rendimiento:** <https://demo.prestashop.com/>. **Herramienta elegida:** Apache JMeter.
+**Objetivo de las pruebas de rendimiento:** <https://practicesoftwaretesting.com/> (alternativa a PrestaShop Demo por inestabilidad). **Herramienta elegida:** Apache JMeter.
 
 ## 4. Criterios de aceptación
 
