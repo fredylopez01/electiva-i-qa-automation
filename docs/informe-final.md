@@ -4,21 +4,29 @@
 
 ## Datos generales
 
-- Equipo: ______________________
-- Integrantes: ______________________
+- Equipo:
+- Integrantes: 
+  - Juan Esteban Moreno Gamboa
+  - Bryan Nicolas Sanchez Vargas
+  - Fredy Oswaldo López Daza
 - Fecha de entrega: ______________________
-- Sitio web evaluado: https://demo.prestashop.com/ (PrestaShop Demo)
+- Sitio web evaluado: https://practicesoftwaretesting.com/ (Practice Software Testing / Toolshop). Alternativa usada por inestabilidad del demo de PrestaShop; la suite PrestaShop se conserva en el repositorio.
 - API(s) evaluadas: JSONPlaceholder, restful-api.dev, httpbin, FakerAPI, Open-Meteo y Practice Software Testing (Toolshop)
+
 
 ## 1. Etapa 1 — Pruebas E2E (Cypress)
 
-- Herramienta y versión:
-- Casos happy path ejecutados (crear cuenta, login, agregar 2 productos, checkout):
-- Pruebas negativas ejecutadas (mínimo 3):
-- Resultados (ejecutadas / pasadas / fallidas):
-- Reporte: `results/e2e-web/`
-- Evidencias: `evidences/e2e-web/`
+- Herramienta y versión: Cypress 13.17.0 (Electron 118, Node.js 22.22.0).
+- Sitio evaluado: <https://practicesoftwaretesting.com/> (Toolshop). La suite PrestaShop se conserva como alternativa en `tests/e2e-web/cypress/e2e/checkout/` y `tests/e2e-web/cypress/e2e/negative/`.
+- Casos happy path ejecutados (crear cuenta, login, agregar 2 productos, checkout): 5 pasos en `tests/e2e-web/cypress/e2e/toolshop/checkout-happy-path.cy.js` — crear cuenta, iniciar sesión, agregar `Combination Pliers`, agregar `Pliers`, completar checkout con dirección y pago Cash on Delivery.
+- Pruebas negativas ejecutadas (mínimo 3): 3 casos en `tests/e2e-web/cypress/e2e/toolshop/negative/negative-checkout.cy.js` — credenciales incorrectas, checkout con carrito vacío, tarjeta inválida.
+- Resultados (ejecutadas / pasadas / fallidas): 8 ejecutadas / 8 pasadas / 0 fallidas.
+- Reporte: `results/e2e-web/toolshop-e2e-report.md`
+- Evidencias: `tests/e2e-web/cypress/videos/checkout-happy-path.cy.js.mp4`, `tests/e2e-web/cypress/videos/negative-checkout.cy.js.mp4`
 - Hallazgos:
+  - El demo renovó IDs de productos; se actualizaron a los IDs vigentes del catálogo.
+  - La UI puede aparecer en español; las pruebas usan `data-test` y aceptan mensajes en ambos idiomas.
+  - El checkout de Toolshop no expone un selector separado de método de envío; se documentó la adaptación en el reporte.
 
 ## 2. Etapa 2 — Pruebas móviles (Appium)
 
@@ -68,10 +76,24 @@
 
 ### 4.1 Pruebas de carga (10, 20 y 50 usuarios concurrentes)
 
-- Herramienta y configuración: Apache JMeter
+- Herramienta y configuración: Apache JMeter 5.x. Planes en `tests/performance/load/plans/` contra `https://practicesoftwaretesting.com/` (GET `/`, 1 iteración por usuario, ramp-up igual al número de usuarios, Cookie/Header Manager, Summary Report).
+- Ejecución:
+
+  ```bash
+  bash tests/performance/load/run-all.sh
+  ```
+
 - Resultados por nivel de concurrencia (tiempo de respuesta, throughput, errores):
-- Reporte: `results/performance/`
-- Informe de las 3 pruebas:
+
+  | Usuarios | Ramp-up | Promedio (ms) | P95 (ms) | Mín (ms) | Máx (ms) | Throughput (req/s) | Error % | Duración (s) |
+  | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+  | 10 | 10 s | 829.00 | 1141.75 | 679 | 1144 | 0.99 | 0.00% | 10.14 |
+  | 20 | 20 s | 762.70 | 1131.25 | 680 | 1155 | 1.01 | 0.00% | 19.73 |
+  | 50 | 50 s | 726.54 | 1124.10 | 671 | 1217 | 1.01 | 0.00% | 49.66 |
+
+- Reporte: `results/performance/load-report.html` (resumen consolidado generado desde los JTL).
+- Archivos JTL: `results/performance/load-10-users.jtl`, `results/performance/load-20-users.jtl`, `results/performance/load-50-users.jtl`.
+- Informe de las 3 pruebas: las tres ejecuciones completaron sin errores. El throughput se mantuvo ~1 req/s, coherente con 1 iteración por usuario y ramp-up igual a la concurrencia. El P95 se mantuvo estable (~1124–1142 ms) al aumentar de 10 a 50 usuarios; no se observaron fallos HTTP en estas muestras. Nota: Toolshop es SPA, por lo que JMeter midió la respuesta HTTP inicial, no el render completo del navegador.
 
 ### 4.2 Pruebas de estrés (2 pruebas, recursos máximos)
 
