@@ -2,24 +2,26 @@
 
 const SHOP_URL = "https://practicesoftwaretesting.com";
 const PRODUCTS = [
-  { id: "01M85MGVETVKW1WJ2TVRZZWJAW", name: "Combination Pliers" },
-  { id: "01M85MGVEZAKD2GXTM68PQ9V70", name: "Pliers" },
+  { id: "01M85QYN1Q1591YDXYM601X6B3", name: "Combination Pliers" },
+  { id: "01M85QYN1SXQ82RQNY4TY93CJ5", name: "Pliers" },
 ];
 
 describe(
   "Happy path de checkout en Practice Software Testing",
-  { retries: 0 },
+  { testIsolation: false, retries: 0 },
   () => {
-    it("registra una cuenta, inicia sesión y completa una compra", () => {
-      const user = {
+    let user;
+
+    before(() => {
+      user = {
         firstName: "QA",
         lastName: "Automation",
         email: `qa.${Date.now()}@example.com`,
         password: "QaPractice2026!",
       };
-      let firstProductName;
-      let secondProductName;
+    });
 
+    it("Paso 1 — registra una cuenta", () => {
       cy.visit(`${SHOP_URL}/auth/register`);
       cy.get('[data-test="first-name"]').type(user.firstName);
       cy.get('[data-test="last-name"]').type(user.lastName);
@@ -35,34 +37,40 @@ describe(
       cy.get('[data-test="password"]').type(user.password);
       cy.get('[data-test="register-submit"]').click();
       cy.location("pathname").should("not.eq", "/auth/register");
+    });
 
+    it("Paso 2 — inicia sesión con la cuenta creada", () => {
       cy.visit(`${SHOP_URL}/auth/login`);
       cy.get('[data-test="email"]').type(user.email);
       cy.get('[data-test="password"]').type(user.password);
       cy.get('[data-test="login-submit"]').click();
       cy.location("pathname").should("not.eq", "/auth/login");
+    });
 
+    it("Paso 3 — agrega el primer producto", () => {
       cy.visit(`${SHOP_URL}/product/${PRODUCTS[0].id}`);
       cy.get("h1").should(($heading) => {
         expect($heading.text().trim()).to.eq(PRODUCTS[0].name);
       });
       cy.get('[data-test="add-to-cart"]').click();
       cy.get('[role="alert"]').should("be.visible");
-      firstProductName = PRODUCTS[0].name;
+    });
 
+    it("Paso 4 — agrega un segundo producto diferente", () => {
       cy.visit(`${SHOP_URL}/product/${PRODUCTS[1].id}`);
       cy.get("h1").should(($heading) => {
         expect($heading.text().trim()).to.eq(PRODUCTS[1].name);
       });
       expect(PRODUCTS[1].name).not.to.eq(PRODUCTS[0].name);
-      secondProductName = PRODUCTS[1].name;
       cy.get('[data-test="add-to-cart"]').click();
       cy.get('[role="alert"]').should("be.visible");
+    });
 
+    it("Paso 5 — completa el checkout y confirma el pedido", () => {
       cy.visit(`${SHOP_URL}/checkout`);
       cy.get("body")
-        .should("contain.text", firstProductName)
-        .and("contain.text", secondProductName);
+        .should("contain.text", PRODUCTS[0].name)
+        .and("contain.text", PRODUCTS[1].name);
       cy.get('[data-test="proceed-1"]').click();
 
       cy.get("body").then(($body) => {

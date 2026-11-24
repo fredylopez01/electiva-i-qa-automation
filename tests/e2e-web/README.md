@@ -50,7 +50,8 @@ npm run cy:open              # modo interactivo
 npm run cy:run               # todas las pruebas en modo headless
 npm run cy:run:checkout      # solo happy path
 npm run cy:run:negative      # solo pruebas negativas
-npm run cy:run:toolshop      # happy path alternativo en Practice Software Testing
+npm run cy:run:toolshop      # cinco pasos de happy path en Practice Software Testing
+npm run cy:run:toolshop:negative # negativos en Practice Software Testing
 ```
 
 La URL se puede sobrescribir con `CYPRESS_baseUrl=https://demo.prestashop.com/`.
@@ -59,7 +60,14 @@ La URL se puede sobrescribir con `CYPRESS_baseUrl=https://demo.prestashop.com/`.
 
 La prueba independiente `cypress/e2e/toolshop/checkout-happy-path.cy.js` cubre
 registro, inicio de sesión, dos productos distintos y checkout con pago de
-prueba "Cash on Delivery". No reemplaza ni modifica la suite de PrestaShop.
+prueba "Cash on Delivery", y muestra cada etapa como un caso separado de
+Cypress. La suite `cypress/e2e/toolshop/negative/` cubre tres casos negativos:
+credenciales incorrectas, checkout con carrito vacío y tarjeta inválida. Estos
+tests son una alternativa adicional; no reemplazan ni modifican la suite de
+PrestaShop. El detalle de la ejecución está en
+[`../../results/e2e-web/toolshop-e2e-report.md`](../../results/e2e-web/toolshop-e2e-report.md).
+La demo puede renovar los IDs de los productos; si deja de encontrarlos,
+actualiza los IDs con los valores vigentes del catálogo.
 
 ## Notas técnicas
 
