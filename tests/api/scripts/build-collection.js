@@ -1,0 +1,632 @@
+#!/usr/bin/env node
+/**
+ * Genera la colección Postman (formato v2.1) de la Etapa 3 a partir de este archivo fuente.
+ *
+ * - Los esquemas JSON de `schemas/` se incrustan como variables de colección (`schema_*`)
+ *   para poder validarlos con `pm.response.to.have.jsonSchema(...)` tanto en Postman como en Newman.
+ * - Las variables de datos (userId, objectName, latitude, ...) tienen valores por defecto como
+ *   variables de colección para que la colección también funcione en Postman sin archivo de datos;
+ *   en Newman, `data/iterations.json` las sobrescribe en cada iteración.
+ *
+ * Uso: npm run build   (desde tests/api)
+ * Salida: collections/reto-final-api.postman_collection.json
+ */
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.resolve(__dirname, '..');
+const OUT = path.join(ROOT, 'collections', 'reto-final-api.postman_collection.json');
+
+// ---------------------------------------------------------------------------
+// Utilidades
+// ---------------------------------------------------------------------------
+const lines = (code) => code.replace(/^\n/, '').replace(/\s+$/, '').split('\n');
+const testEvent = (code) => ({ listen: 'test', script: { type: 'text/javascript', exec: lines(code) } });
+const preEvent = (code) => ({ listen: 'prerequest', script: { type: 'text/javascript', exec: lines(code) } });
+
+const jsonBody = (obj) => ({
+  mode: 'raw',
+  raw: typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2),
+  options: { raw: { language: 'json' } },
+});
+
+/** Construye un request de Postman. */
+function req({ name, method, url, headers = [], body, tests, pre, description, auth }) {
+  const allHeaders = [...headers];
+  if (body && body.mode === 'raw') allHeaders.push({ key: 'Content-Type', value: 'application/json' });
+  const item = {
+    name,
+    request: {
+      method,
+      header: allHeaders,
+      url,
+      description,
+    },
+    event: [],
+  };
+  if (body) item.request.body = body;
+  if (auth) item.request.auth = auth;
+  if (pre) item.event.push(preEvent(pre));
+  if (tests) item.event.push(testEvent(tests));
+  return item;
+}
+
+const folder = (name, description, item) => ({ name, description, item });
+
+// ---------------------------------------------------------------------------
+// Esquemas
+// ---------------------------------------------------------------------------
+const schemaFiles = {
+  schema_jsonplaceholderPost: 'jsonplaceholder-post.schema.json',
+  schema_restfulObject: 'restful-api-object.schema.json',
+  schema_fakerPerson: 'faker-person.schema.json',
+  schema_openMeteoForecast: 'open-meteo-forecast.schema.json',
+  schema_pstProduct: 'pst-product.schema.json',
+};
+const schemaVars = Object.entries(schemaFiles).map(([key, file]) => ({
+  key,
+  value: JSON.stringify(JSON.parse(fs.readFileSync(path.join(ROOT, 'schemas', file), 'utf8'))),
+  type: 'string',
+}));
+
+// Valores por defecto de las variables de datos (= primera fila de data/iterations.json)
+const firstRow = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'iterations.json'), 'utf8'))[0];
+const dataDefaults = Object.entries(firstRow).map(([key, value]) => ({ key, value: String(value), type: 'string' }));
+
+// ---------------------------------------------------------------------------
+// 1. JSONPlaceholder — recursos /posts y /comments (GET, POST, PUT, PATCH, DELETE)
+// ---------------------------------------------------------------------------
+const jsonplaceholder = folder(
+  '01 - JSONPlaceholder',
+  'API REST falsa de posts/comentarios. Las escrituras se simulan (no persisten), lo que permite probar todos los verbos HTTP sin efectos secundarios.',
+  [
+    req({
+      name: 'JP-01 GET listar todos los posts',
+      method: 'GET',
+      url: '{{jsonplaceholderUrl}}/posts',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+pm.test('Content-Type es JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));
+const posts = pm.response.json();
+pm.test('Devuelve un arreglo de 100 posts', () => {
+  pm.expect(posts).to.be.an('array').with.lengthOf(100);
+});
+pm.test('Los ids de los posts son únicos', () => {
+  const ids = posts.map(p => p.id);
+  pm.expect(new Set(ids).size).to.eql(ids.length);
+});
+`,
+    }),
+    req({
+      name: 'JP-02 GET obtener post por id (validación de esquema)',
+      method: 'GET',
+      url: '{{jsonplaceholderUrl}}/posts/1',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+pm.test('Cumple el esquema JSON de Post', () => {
+  pm.response.to.have.jsonSchema(JSON.parse(pm.collectionVariables.get('schema_jsonplaceholderPost')));
+});
+pm.test('El post devuelto es el id 1', () => pm.expect(pm.response.json().id).to.eql(1));
+`,
+    }),
+    req({
+      name: 'JP-03 GET filtrar posts por userId (data-driven)',
+      method: 'GET',
+      url: '{{jsonplaceholderUrl}}/posts?userId={{userId}}',
+      tests: `
+const userId = Number(pm.variables.get('userId'));
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const posts = pm.response.json();
+pm.test('Devuelve 10 posts para el usuario ' + userId, () => pm.expect(posts).to.have.lengthOf(10));
+pm.test('Todos los posts pertenecen al userId solicitado', () => {
+  posts.forEach(p => pm.expect(p.userId).to.eql(userId));
+});
+`,
+    }),
+    req({
+      name: 'JP-04 GET comentarios anidados de un post',
+      method: 'GET',
+      url: '{{jsonplaceholderUrl}}/posts/1/comments',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const comments = pm.response.json();
+pm.test('Devuelve 5 comentarios', () => pm.expect(comments).to.have.lengthOf(5));
+pm.test('Todos los comentarios son del post 1 y tienen email válido', () => {
+  comments.forEach(c => {
+    pm.expect(c.postId).to.eql(1);
+    pm.expect(c.email).to.match(/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/);
+  });
+});
+`,
+    }),
+    req({
+      name: 'JP-05 POST crear post',
+      method: 'POST',
+      url: '{{jsonplaceholderUrl}}/posts',
+      body: jsonBody('{\n  "title": "{{postTitle}}",\n  "body": "Creado desde Newman por el Integrante 2",\n  "userId": {{userId}}\n}'),
+      tests: `
+pm.test('Status 201 Created', () => pm.response.to.have.status(201));
+const body = pm.response.json();
+pm.test('Devuelve el recurso creado con id 101', () => pm.expect(body.id).to.eql(101));
+pm.test('El título y el userId coinciden con lo enviado', () => {
+  pm.expect(body.title).to.eql(pm.variables.get('postTitle'));
+  pm.expect(body.userId).to.eql(Number(pm.variables.get('userId')));
+});
+`,
+    }),
+    req({
+      name: 'JP-06 PUT reemplazar post',
+      method: 'PUT',
+      url: '{{jsonplaceholderUrl}}/posts/1',
+      body: jsonBody({ id: 1, title: 'Titulo reemplazado con PUT', body: 'Cuerpo reemplazado', userId: 1 }),
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('El recurso fue reemplazado completo', () => {
+  pm.expect(body).to.eql({ id: 1, title: 'Titulo reemplazado con PUT', body: 'Cuerpo reemplazado', userId: 1 });
+});
+`,
+    }),
+    req({
+      name: 'JP-07 PATCH actualizar parcialmente post',
+      method: 'PATCH',
+      url: '{{jsonplaceholderUrl}}/posts/1',
+      body: jsonBody({ title: 'Solo cambia el titulo (PATCH)' }),
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('El título cambió', () => pm.expect(body.title).to.eql('Solo cambia el titulo (PATCH)'));
+pm.test('Los demás campos se conservan', () => {
+  pm.expect(body.id).to.eql(1);
+  pm.expect(body.userId).to.eql(1);
+  pm.expect(body.body).to.be.a('string').and.not.be.empty;
+});
+`,
+    }),
+    req({
+      name: 'JP-08 DELETE eliminar post',
+      method: 'DELETE',
+      url: '{{jsonplaceholderUrl}}/posts/1',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+pm.test('El cuerpo de respuesta es un objeto vacío', () => pm.expect(pm.response.json()).to.eql({}));
+`,
+    }),
+    req({
+      name: 'JP-09 GET post inexistente (negativa 404)',
+      method: 'GET',
+      url: '{{jsonplaceholderUrl}}/posts/99999',
+      tests: `
+pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));
+pm.test('El cuerpo es un objeto vacío', () => pm.expect(pm.response.json()).to.eql({}));
+`,
+    }),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// 2. restful-api.dev — CRUD encadenado sobre /objects (persistente)
+// ---------------------------------------------------------------------------
+const restful = folder(
+  '02 - restful-api.dev (CRUD encadenado)',
+  'Ciclo de vida completo de un recurso real: se crea, se consulta, se reemplaza, se modifica, se elimina y se verifica que ya no existe. El id se encadena entre requests con variables de colección.',
+  [
+    req({
+      name: 'RA-01 POST crear objeto',
+      method: 'POST',
+      url: '{{restfulApiUrl}}/objects',
+      body: jsonBody('{\n  "name": "{{objectName}}",\n  "data": {\n    "year": {{objectYear}},\n    "price": {{objectPrice}},\n    "owner": "Integrante 2 - Electiva I"\n  }\n}'),
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Cumple el esquema de Object', () => {
+  pm.response.to.have.jsonSchema(JSON.parse(pm.collectionVariables.get('schema_restfulObject')));
+});
+pm.test('Persiste los datos enviados', () => {
+  pm.expect(body.name).to.eql(pm.variables.get('objectName'));
+  pm.expect(body.data.year).to.eql(Number(pm.variables.get('objectYear')));
+  pm.expect(body.data.price).to.eql(Number(pm.variables.get('objectPrice')));
+});
+pm.test('Asigna id y fecha de creación', () => {
+  pm.expect(body.id).to.be.a('string').and.not.be.empty;
+  pm.expect(body.createdAt).to.exist;
+});
+pm.collectionVariables.set('objectId', body.id);
+`,
+    }),
+    req({
+      name: 'RA-02 GET consultar objeto creado',
+      method: 'GET',
+      url: '{{restfulApiUrl}}/objects/{{objectId}}',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Devuelve el mismo objeto creado', () => {
+  pm.expect(body.id).to.eql(pm.collectionVariables.get('objectId'));
+  pm.expect(body.name).to.eql(pm.variables.get('objectName'));
+});
+`,
+    }),
+    req({
+      name: 'RA-03 PUT reemplazar objeto',
+      method: 'PUT',
+      url: '{{restfulApiUrl}}/objects/{{objectId}}',
+      body: jsonBody('{\n  "name": "{{objectName}} (PUT)",\n  "data": {\n    "year": {{objectYear}},\n    "price": 1,\n    "color": "negro"\n  }\n}'),
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('El objeto fue reemplazado', () => {
+  pm.expect(body.name).to.eql(pm.variables.get('objectName') + ' (PUT)');
+  pm.expect(body.data).to.eql({ year: Number(pm.variables.get('objectYear')), price: 1, color: 'negro' });
+});
+pm.test('Registra fecha de actualización', () => pm.expect(body.updatedAt).to.exist);
+`,
+    }),
+    req({
+      name: 'RA-04 PATCH actualizar nombre del objeto',
+      method: 'PATCH',
+      url: '{{restfulApiUrl}}/objects/{{objectId}}',
+      body: jsonBody('{\n  "name": "{{objectName}} (PATCH)"\n}'),
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Solo cambia el nombre', () => pm.expect(body.name).to.eql(pm.variables.get('objectName') + ' (PATCH)'));
+pm.test('Conserva los datos del PUT anterior', () => pm.expect(body.data.color).to.eql('negro'));
+`,
+    }),
+    req({
+      name: 'RA-05 DELETE eliminar objeto',
+      method: 'DELETE',
+      url: '{{restfulApiUrl}}/objects/{{objectId}}',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+pm.test('Confirma la eliminación del id', () => {
+  pm.expect(pm.response.json().message).to.include(pm.collectionVariables.get('objectId')).and.include('deleted');
+});
+`,
+    }),
+    req({
+      name: 'RA-06 GET objeto eliminado (negativa 404)',
+      method: 'GET',
+      url: '{{restfulApiUrl}}/objects/{{objectId}}',
+      tests: `
+pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));
+pm.test('Mensaje de error indica que no existe', () => pm.expect(pm.response.json().error).to.include('not found'));
+`,
+    }),
+    req({
+      name: 'RA-07 PUT sobre id reservado (negativa 405)',
+      method: 'PUT',
+      url: '{{restfulApiUrl}}/objects/7',
+      body: jsonBody({ name: 'Intento de sobrescribir', data: {} }),
+      tests: `
+pm.test('Status 405 Method Not Allowed', () => pm.response.to.have.status(405));
+pm.test('Explica que el id es reservado', () => pm.expect(pm.response.json().error).to.include('reserved id'));
+`,
+    }),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// 3. httpbin — protocolo HTTP (métodos, cabeceras, códigos de estado)
+// ---------------------------------------------------------------------------
+const httpbin = folder(
+  '03 - httpbin',
+  'Servicio de eco HTTP: valida que el cliente envía correctamente query params, cabeceras y cuerpos, y cubre métodos menos comunes (HEAD, OPTIONS).',
+  [
+    req({
+      name: 'HB-01 GET eco de query params y cabeceras',
+      method: 'GET',
+      url: '{{httpbinUrl}}/get?curso=electiva-i&ciudad={{city}}',
+      headers: [{ key: 'X-Reto-Final', value: 'integrante-2' }],
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Devuelve los query params enviados', () => {
+  pm.expect(body.args).to.eql({ curso: 'electiva-i', ciudad: pm.variables.get('city') });
+});
+pm.test('Recibe la cabecera personalizada', () => pm.expect(body.headers['X-Reto-Final']).to.eql('integrante-2'));
+`,
+    }),
+    req({
+      name: 'HB-02 POST eco de cuerpo JSON',
+      method: 'POST',
+      url: '{{httpbinUrl}}/post',
+      body: jsonBody('{\n  "producto": "{{objectName}}",\n  "cantidad": 2,\n  "envio": { "ciudad": "{{city}}" }\n}'),
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('El servidor recibió el JSON intacto', () => {
+  pm.expect(body.json).to.eql({ producto: pm.variables.get('objectName'), cantidad: 2, envio: { ciudad: pm.variables.get('city') } });
+});
+pm.test('El Content-Type enviado fue application/json', () => pm.expect(body.headers['Content-Type']).to.include('application/json'));
+`,
+    }),
+    req({
+      name: 'HB-03 PUT eco de formulario urlencoded',
+      method: 'PUT',
+      url: '{{httpbinUrl}}/put',
+      body: {
+        mode: 'urlencoded',
+        urlencoded: [
+          { key: 'nombre', value: 'Integrante 2', type: 'text' },
+          { key: 'rol', value: 'QA API', type: 'text' },
+        ],
+      },
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Se recibió el formulario', () => pm.expect(body.form).to.eql({ nombre: 'Integrante 2', rol: 'QA API' }));
+pm.test('Content-Type urlencoded', () => pm.expect(body.headers['Content-Type']).to.include('application/x-www-form-urlencoded'));
+`,
+    }),
+    req({
+      name: 'HB-04 DELETE con query param',
+      method: 'DELETE',
+      url: '{{httpbinUrl}}/delete?id=42',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+pm.test('Recibe el parámetro del recurso a eliminar', () => pm.expect(pm.response.json().args.id).to.eql('42'));
+`,
+    }),
+    req({
+      name: 'HB-05 HEAD solo cabeceras',
+      method: 'HEAD',
+      url: '{{httpbinUrl}}/get',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+pm.test('No devuelve cuerpo', () => pm.expect(pm.response.text()).to.be.empty);
+pm.test('Incluye cabecera Content-Type', () => pm.expect(pm.response.headers.has('Content-Type')).to.be.true);
+`,
+    }),
+    req({
+      name: 'HB-06 OPTIONS métodos permitidos (CORS)',
+      method: 'OPTIONS',
+      url: '{{httpbinUrl}}/get',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const allowed = (pm.response.headers.get('Access-Control-Allow-Methods') || '').toUpperCase();
+pm.test('Declara los métodos permitidos', () => {
+  ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].forEach(m => pm.expect(allowed).to.include(m));
+});
+`,
+    }),
+    req({
+      name: 'HB-07 GET código de estado 418 (negativa)',
+      method: 'GET',
+      url: '{{httpbinUrl}}/status/418',
+      tests: `
+pm.test("Status 418 I'm a teapot", () => pm.response.to.have.status(418));
+pm.test('Es un error del lado del cliente (4xx)', () => pm.expect(pm.response.code).to.be.within(400, 499));
+`,
+    }),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// 4. FakerAPI — generación de datos
+// ---------------------------------------------------------------------------
+const faker = folder(
+  '04 - FakerAPI',
+  'Generador de datos falsos. Se valida que respete la cantidad y el locale solicitados y la estructura de cada registro.',
+  [
+    req({
+      name: 'FK-01 GET personas con cantidad y locale',
+      method: 'GET',
+      url: '{{fakerApiUrl}}/persons?_quantity={{personQuantity}}&_locale={{locale}}',
+      tests: `
+const qty = Number(pm.variables.get('personQuantity'));
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Respeta la cantidad solicitada', () => {
+  pm.expect(body.total).to.eql(qty);
+  pm.expect(body.data).to.have.lengthOf(qty);
+});
+pm.test('Respeta el locale solicitado', () => pm.expect(body.locale).to.eql(pm.variables.get('locale')));
+pm.test('Cada persona cumple el esquema', () => {
+  const schema = JSON.parse(pm.collectionVariables.get('schema_fakerPerson'));
+  body.data.forEach(p => pm.expect(tv4.validate(p, schema), tv4.error && tv4.error.message).to.be.true);
+});
+`,
+    }),
+    req({
+      name: 'FK-02 GET productos con precio e imágenes',
+      method: 'GET',
+      url: '{{fakerApiUrl}}/products?_quantity=4&_price_min=10&_price_max=100',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Devuelve 4 productos', () => pm.expect(body.data).to.have.lengthOf(4));
+pm.test('Cada producto tiene nombre, EAN de 13 dígitos e imágenes', () => {
+  body.data.forEach(p => {
+    pm.expect(p.name).to.be.a('string').and.not.be.empty;
+    pm.expect(p.ean).to.match(/^\\d{13}$/);
+    pm.expect(p.images).to.be.an('array').that.is.not.empty;
+  });
+});
+`,
+    }),
+    req({
+      name: 'FK-03 GET recurso inexistente (negativa 404)',
+      method: 'GET',
+      url: '{{fakerApiUrl}}/recurso-que-no-existe',
+      tests: `
+pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));
+`,
+    }),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// 5. Open-Meteo — pronóstico del clima
+// ---------------------------------------------------------------------------
+const openMeteo = folder(
+  '05 - Open-Meteo',
+  'API de pronóstico del clima. Se valida estructura, rangos físicos de los valores y manejo de parámetros inválidos.',
+  [
+    req({
+      name: 'OM-01 GET pronóstico actual y horario por coordenadas',
+      method: 'GET',
+      url: '{{openMeteoUrl}}/forecast?latitude={{latitude}}&longitude={{longitude}}&current=temperature_2m,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m&forecast_days=1&timezone=America%2FBogota',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Cumple el esquema de pronóstico', () => {
+  pm.response.to.have.jsonSchema(JSON.parse(pm.collectionVariables.get('schema_openMeteoForecast')));
+});
+pm.test('Las coordenadas corresponden a ' + pm.variables.get('city'), () => {
+  pm.expect(body.latitude).to.be.closeTo(Number(pm.variables.get('latitude')), 0.1);
+  pm.expect(body.longitude).to.be.closeTo(Number(pm.variables.get('longitude')), 0.1);
+});
+pm.test('Zona horaria America/Bogota', () => pm.expect(body.timezone).to.eql('America/Bogota'));
+pm.test('Temperatura en °C y en un rango físico razonable', () => {
+  pm.expect(body.current_units.temperature_2m).to.eql('°C');
+  pm.expect(body.current.temperature_2m).to.be.within(-20, 50);
+});
+pm.test('24 valores horarios para 1 día', () => pm.expect(body.hourly.temperature_2m).to.have.lengthOf(24));
+`,
+    }),
+    req({
+      name: 'OM-02 GET latitud fuera de rango (negativa 400)',
+      method: 'GET',
+      url: '{{openMeteoUrl}}/forecast?latitude=123&longitude={{longitude}}&current=temperature_2m',
+      tests: `
+pm.test('Status 400 Bad Request', () => pm.response.to.have.status(400));
+const body = pm.response.json();
+pm.test('Indica error y la razón', () => {
+  pm.expect(body.error).to.be.true;
+  pm.expect(body.reason).to.include('Latitude must be in range of -90 to 90');
+});
+`,
+    }),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// 6. Practice Software Testing (Toolshop) — API de e-commerce
+// ---------------------------------------------------------------------------
+const pst = folder(
+  '06 - Practice Software Testing (Toolshop)',
+  'API de una tienda de herramientas (e-commerce de práctica): catálogo, búsqueda, filtros y manejo de errores/autenticación.',
+  [
+    req({
+      name: 'PST-01 GET catálogo paginado de productos',
+      method: 'GET',
+      url: '{{pstApiUrl}}/products?page=1',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const body = pm.response.json();
+pm.test('Respuesta paginada (página 1)', () => {
+  pm.expect(body.current_page).to.eql(1);
+  pm.expect(body).to.include.keys('data', 'total', 'per_page', 'last_page');
+  pm.expect(body.data.length).to.be.at.most(body.per_page);
+});
+pm.test('Todos los productos tienen precio positivo', () => body.data.forEach(p => pm.expect(p.price).to.be.above(0)));
+pm.collectionVariables.set('productId', body.data[0].id);
+pm.collectionVariables.set('productName', body.data[0].name);
+`,
+    }),
+    req({
+      name: 'PST-02 GET detalle de producto encadenado (esquema)',
+      method: 'GET',
+      url: '{{pstApiUrl}}/products/{{productId}}',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+pm.test('Cumple el esquema de Product', () => {
+  pm.response.to.have.jsonSchema(JSON.parse(pm.collectionVariables.get('schema_pstProduct')));
+});
+pm.test('Corresponde al producto del catálogo', () => {
+  const body = pm.response.json();
+  pm.expect(body.id).to.eql(pm.collectionVariables.get('productId'));
+  pm.expect(body.name).to.eql(pm.collectionVariables.get('productName'));
+});
+`,
+    }),
+    req({
+      name: 'PST-03 GET búsqueda de productos por término (data-driven)',
+      method: 'GET',
+      url: '{{pstApiUrl}}/products/search?q={{searchTerm}}',
+      tests: `
+const term = String(pm.variables.get('searchTerm')).toLowerCase();
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const items = pm.response.json().data;
+pm.test('Encuentra al menos un resultado', () => pm.expect(items).to.be.an('array').that.is.not.empty);
+pm.test('Cada resultado contiene "' + term + '" en el nombre o la descripción', () => {
+  items.forEach(p => pm.expect((p.name + ' ' + p.description).toLowerCase()).to.include(term));
+});
+`,
+    }),
+    req({
+      name: 'PST-04 GET marcas disponibles',
+      method: 'GET',
+      url: '{{pstApiUrl}}/brands',
+      tests: `
+pm.test('Status 200 OK', () => pm.response.to.have.status(200));
+const brands = pm.response.json();
+pm.test('Devuelve una lista no vacía de marcas', () => pm.expect(brands).to.be.an('array').that.is.not.empty);
+pm.test('Cada marca tiene id, name y slug', () => brands.forEach(b => pm.expect(b).to.include.keys('id', 'name', 'slug')));
+`,
+    }),
+    req({
+      name: 'PST-05 POST login con credenciales inválidas (negativa 401)',
+      method: 'POST',
+      url: '{{pstApiUrl}}/users/login',
+      body: jsonBody({ email: 'usuario.inexistente@example.test', password: 'clave-incorrecta' }),
+      tests: `
+pm.test('Status 401 Unauthorized', () => pm.response.to.have.status(401));
+pm.test('No entrega token de acceso', () => pm.expect(pm.response.json()).to.not.have.property('access_token'));
+pm.test('Mensaje Unauthorized', () => pm.expect(pm.response.json().error).to.eql('Unauthorized'));
+`,
+    }),
+    req({
+      name: 'PST-06 GET producto inexistente (negativa 404)',
+      method: 'GET',
+      url: '{{pstApiUrl}}/products/ID-QUE-NO-EXISTE',
+      tests: `
+pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));
+pm.test('Mensaje de recurso no encontrado', () => pm.expect(pm.response.json().message).to.eql('Requested item not found'));
+`,
+    }),
+  ],
+);
+
+// ---------------------------------------------------------------------------
+// Colección
+// ---------------------------------------------------------------------------
+const collection = {
+  info: {
+    _postman_id: '3c3e1b8e-5f0d-4b7a-9d55-2b1f6f1f0a20',
+    name: 'Reto Final Electiva I - API Testing (Integrante 2)',
+    description:
+      'Etapa 3 del Reto Final de Electiva I (UPTC). 34 requests de API con aserciones automatizadas sobre 6 APIs públicas, ' +
+      'cubriendo GET, POST, PUT, PATCH, DELETE, HEAD y OPTIONS, casos positivos y negativos, validación de esquemas JSON, ' +
+      'encadenamiento de variables y ejecución data-driven.\n\nArchivo GENERADO por scripts/build-collection.js: edite el script y ejecute `npm run build`.',
+    schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+  },
+  event: [
+    preEvent(`
+// Registro de la iteración en curso (útil en el log de Newman)
+if (pm.info.requestName && pm.info.iteration !== undefined) {
+  console.log('[iteración ' + (pm.info.iteration + 1) + ' - ' + pm.variables.get('iterationLabel') + '] ' + pm.info.requestName);
+}
+`),
+    testEvent(`
+// Aserción común a todos los requests: tiempo de respuesta aceptable
+const maxMs = Number(pm.variables.get('maxResponseTimeMs') || 5000);
+pm.test('Tiempo de respuesta menor a ' + maxMs + ' ms', () => pm.expect(pm.response.responseTime).to.be.below(maxMs));
+`),
+  ],
+  variable: [
+    { key: 'objectId', value: '', type: 'string' },
+    { key: 'productId', value: '', type: 'string' },
+    { key: 'productName', value: '', type: 'string' },
+    ...dataDefaults,
+    ...schemaVars,
+  ],
+  item: [jsonplaceholder, restful, httpbin, faker, openMeteo, pst],
+};
+
+fs.mkdirSync(path.dirname(OUT), { recursive: true });
+fs.writeFileSync(OUT, JSON.stringify(collection, null, 2) + '\n');
+const count = collection.item.reduce((n, f) => n + f.item.length, 0);
+console.log(`Colección generada: ${path.relative(ROOT, OUT)} (${count} requests en ${collection.item.length} carpetas)`);

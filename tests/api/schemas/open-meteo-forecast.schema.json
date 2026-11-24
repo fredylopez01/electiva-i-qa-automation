@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Open-Meteo Forecast (current + hourly)",
+  "type": "object",
+  "required": ["latitude", "longitude", "timezone", "current", "current_units", "hourly"],
+  "properties": {
+    "latitude": { "type": "number" },
+    "longitude": { "type": "number" },
+    "timezone": { "type": "string" },
+    "current": {
+      "type": "object",
+      "required": ["time", "temperature_2m", "relative_humidity_2m", "wind_speed_10m"],
+      "properties": {
+        "temperature_2m": { "type": "number" },
+        "relative_humidity_2m": { "type": "number", "minimum": 0, "maximum": 100 },
+        "wind_speed_10m": { "type": "number", "minimum": 0 }
+      }
+    },
+    "hourly": {
+      "type": "object",
+      "required": ["time", "temperature_2m"],
+      "properties": {
+        "time": { "type": "array", "minItems": 24 },
+        "temperature_2m": { "type": "array", "minItems": 24 }
+      }
+    }
+  }
+}
