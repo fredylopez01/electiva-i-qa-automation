@@ -1,0 +1,7 @@
+prestashop-stress-prestashop-1 Up 5 minutes
+prestashop-stress-mysql-1 Up 26 minutes (healthy)
+/prestashop-stress-prestashop-1 OOMKilled=false RestartCount=0
+/prestashop-stress-mysql-1 OOMKilled=false RestartCount=0
+recuperacion 200 0.038480s
+recuperacion 200 0.024564s
+recuperacion 200 0.020453s

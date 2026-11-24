@@ -1,0 +1,66 @@
+# Entorno local de PrestaShop para las pruebas de estrés (ver ADR-003 en docs/decisiones.md).
+#
+# Levantar:  docker compose -f tests/performance/stress/docker-compose.yml up -d
+# Tienda:    http://localhost:8090/
+# Apagar:    docker compose -f tests/performance/stress/docker-compose.yml down -v
+#
+# Las credenciales son valores de prueba solo para este entorno local desechable.
+# Se pueden sobrescribir con un archivo .env (ignorado por Git) junto a este compose.
+#
+# Los límites de CPU/memoria del sistema bajo prueba (SUT) son deliberadamente menores que los
+# recursos que recibe JMeter, para que sea la aplicación (y no el generador de carga) la que se
+# agote primero.
+
+name: prestashop-stress
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWD:-root_test_pw}
+      MYSQL_DATABASE: prestashop
+      MYSQL_USER: prestashop
+      MYSQL_PASSWORD: ${DB_PASSWD:-prestashop_test_pw}
+    command: --max-connections=500
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${DB_ROOT_PASSWD:-root_test_pw}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1g
+
+  prestashop:
+    image: prestashop/prestashop:8.2-apache
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8090:80"
+    environment:
+      DB_SERVER: mysql
+      DB_NAME: prestashop
+      DB_USER: prestashop
+      DB_PASSWD: ${DB_PASSWD:-prestashop_test_pw}
+      PS_INSTALL_AUTO: "1"
+      PS_DOMAIN: localhost:8090
+      PS_LANGUAGE: es
+      PS_COUNTRY: CO
+      PS_FOLDER_ADMIN: admin-stress
+      PS_FOLDER_INSTALL: install-stress
+      PS_DEV_MODE: "0"
+      ADMIN_MAIL: ${PS_ADMIN_MAIL:-admin@example.test}
+      ADMIN_PASSWD: ${PS_ADMIN_PASSWD:-admin_test_pw}
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2g
+
+volumes:
+  mysql-data:

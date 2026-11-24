@@ -1,0 +1,800 @@
+# Ejecución Newman — 2026-11-23T04:06:36.473Z
+# Comando: newman run collections/reto-final-api.postman_collection.json -e environments/public-apis.postman_environment.json -d data/iterations.json -r cli,htmlextra,junit,json --reporter-htmlextra-export /Users/juanes/Documents/Uptc/IX Semestre/Electiva I/Reto final/electiva-i-qa-automation/tests/api/reports/newman-report.html --reporter-htmlextra-title Reto Final Electiva I - API Testing (Integrante 2) --reporter-htmlextra-browserTitle Newman - Reto Final Electiva I --reporter-junit-export /Users/juanes/Documents/Uptc/IX Semestre/Electiva I/Reto final/electiva-i-qa-automation/tests/api/reports/newman-junit.xml --reporter-json-export /Users/juanes/Documents/Uptc/IX Semestre/Electiva I/Reto final/electiva-i-qa-automation/tests/api/reports/newman-summary.json --color on
+# Código de salida: 1
+
+newman
+
+Reto Final Electiva I - API Testing (Integrante 2)
+
+Iteration 1/2
+
+❏ 01 - JSONPlaceholder
+↳ JP-01 GET listar todos los posts
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -01 GET listar todos los posts'
+  └
+  GET https://jsonplaceholder.typicode.com/posts [200 OK, 28.47kB, 288ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Content-Type es JSON
+  ✓  Devuelve un arreglo de 100 posts
+  ✓  Los ids de los posts son únicos
+
+↳ JP-02 GET obtener post por id (validación de esquema)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -02 GET obtener post por id (validación de esquema)'[
+  │ 39m
+  └
+  GET https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.25kB, 92ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema JSON de Post
+  ✓  El post devuelto es el id 1
+
+↳ JP-03 GET filtrar posts por userId (data-driven)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -03 GET filtrar posts por userId (data-driven)'
+  └
+  GET https://jsonplaceholder.typicode.com/posts?userId=1 [200 OK, 3.69kB, 98ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve 10 posts para el usuario 1
+  ✓  Todos los posts pertenecen al userId solicitado
+
+↳ JP-04 GET comentarios anidados de un post
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -04 GET comentarios anidados de un post'
+  └
+  GET https://jsonplaceholder.typicode.com/posts/1/comments [200 OK, 2.47kB, 91ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve 5 comentarios
+  ✓  Todos los comentarios son del post 1 y tienen email válido
+
+↳ JP-05 POST crear post
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -05 POST crear post'
+  └
+  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.18kB, 184ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 201 Created
+  ✓  Devuelve el recurso creado con id 101
+  ✓  El título y el userId coinciden con lo enviado
+
+↳ JP-06 PUT reemplazar post
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -06 PUT reemplazar post'
+  └
+  PUT https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.04kB, 142ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El recurso fue reemplazado completo
+
+↳ JP-07 PATCH actualizar parcialmente post
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -07 PATCH actualizar parcialmente post'
+  └
+  PATCH https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.19kB, 125ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El título cambió
+  ✓  Los demás campos se conservan
+
+↳ JP-08 DELETE eliminar post
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -08 DELETE eliminar post'
+  └
+  DELETE https://jsonplaceholder.typicode.com/posts/1 [200 OK, 910B, 132ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El cuerpo de respuesta es un objeto vacío
+
+↳ JP-09 GET post inexistente (negativa 404)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] JP
+  │ -09 GET post inexistente (negativa 404)'
+  └
+  GET https://jsonplaceholder.typicode.com/posts/99999 [404 Not Found, 928B, 84ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+  ✓  El cuerpo es un objeto vacío
+
+❏ 02 - restful-api.dev (CRUD encadenado)
+↳ RA-01 POST crear objeto
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] RA
+  │ -01 POST crear objeto'
+  └
+  POST https://api.restful-api.dev/objects [200 OK, 1.04kB, 733ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema de Object
+  ✓  Persiste los datos enviados
+  ✓  Asigna id y fecha de creación
+
+↳ RA-02 GET consultar objeto creado
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] RA
+  │ -02 GET consultar objeto creado'
+  └
+  GET https://api.restful-api.dev/objects/ff808181a09d98f701a206952d832094 [200 OK, 1.02kB, 378ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve el mismo objeto creado
+
+↳ RA-03 PUT reemplazar objeto
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] RA
+  │ -03 PUT reemplazar objeto'
+  └
+  PUT https://api.restful-api.dev/objects/ff808181a09d98f701a206952d832094 [200 OK, 1.03kB, 382ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El objeto fue reemplazado
+  ✓  Registra fecha de actualización
+
+↳ RA-04 PATCH actualizar nombre del objeto
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] RA
+  │ -04 PATCH actualizar nombre del objeto'
+  └
+  PATCH https://api.restful-api.dev/objects/ff808181a09d98f701a206952d832094 [200 OK, 1.03kB, 503ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Solo cambia el nombre
+  ✓  Conserva los datos del PUT anterior
+
+↳ RA-05 DELETE eliminar objeto
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] RA
+  │ -05 DELETE eliminar objeto'
+  └
+  DELETE https://api.restful-api.dev/objects/ff808181a09d98f701a206952d832094 [200 OK, 957B, 385ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Confirma la eliminación del id
+
+↳ RA-06 GET objeto eliminado (negativa 404)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] RA
+  │ -06 GET objeto eliminado (negativa 404)'
+  └
+  GET https://api.restful-api.dev/objects/ff808181a09d98f701a206952d832094 [404 Not Found, 961B, 495ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+  ✓  Mensaje de error indica que no existe
+
+↳ RA-07 PUT sobre id reservado (negativa 405)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] RA
+  │ -07 PUT sobre id reservado (negativa 405)'
+  └
+  PUT https://api.restful-api.dev/objects/7 [405 Method Not Allowed, 1.05kB, 413ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 405 Method Not Allowed
+  ✓  Explica que el id es reservado
+
+❏ 03 - httpbin
+↳ HB-01 GET eco de query params y cabeceras
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] HB
+  │ -01 GET eco de query params y cabeceras'
+  └
+  GET https://httpbin.org/get?curso=electiva-i&ciudad=Tunja [200 OK, 772B, 326ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve los query params enviados
+  ✓  Recibe la cabecera personalizada
+
+↳ HB-02 POST eco de cuerpo JSON
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] HB
+  │ -02 POST eco de cuerpo JSON'
+  └
+  POST https://httpbin.org/post [200 OK, 987B, 103ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El servidor recibió el JSON intacto
+  ✓  El Content-Type enviado fue application/json
+
+↳ HB-03 PUT eco de formulario urlencoded
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] HB
+  │ -03 PUT eco de formulario urlencoded'
+  └
+  PUT https://httpbin.org/put [200 OK, 851B, 97ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Se recibió el formulario
+  ✓  Content-Type urlencoded
+
+↳ HB-04 DELETE con query param
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] HB
+  │ -04 DELETE con query param'
+  └
+  DELETE https://httpbin.org/delete?id=42 [200 OK, 743B, 100ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Recibe el parámetro del recurso a eliminar
+
+↳ HB-05 HEAD solo cabeceras
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] HB
+  │ -05 HEAD solo cabeceras'
+  └
+  HEAD https://httpbin.org/get [200 OK, 305B, 102ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  No devuelve cuerpo
+  ✓  Incluye cabecera Content-Type
+
+↳ HB-06 OPTIONS métodos permitidos (CORS)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] HB
+  │ -06 OPTIONS métodos permitidos (CORS)'
+  └
+  OPTIONS https://httpbin.org/get [200 OK, 424B, 102ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Declara los métodos permitidos
+
+↳ HB-07 GET código de estado 418 (negativa)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] HB
+  │ -07 GET código de estado 418 (negativa)'
+  └
+  GET https://httpbin.org/status/418 [418 Unknown, 462B, 123ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 418 I'm a teapot
+  ✓  Es un error del lado del cliente (4xx)
+
+❏ 04 - FakerAPI
+↳ FK-01 GET personas con cantidad y locale
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] FK
+  │ -01 GET personas con cantidad y locale'
+  └
+  GET https://fakerapi.it/api/v2/persons?_quantity=3&_locale=es_ES [200 OK, 1.89kB, 996ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Respeta la cantidad solicitada
+  ✓  Respeta el locale solicitado
+  ┌
+  │ `Using "tv4" is deprecated. Use "require('ajv')" 
+  │ instead.`
+  └
+  ✓  Cada persona cumple el esquema
+
+↳ FK-02 GET productos con precio e imágenes
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] FK
+  │ -02 GET productos con precio e imágenes'
+  └
+  GET https://fakerapi.it/api/v2/products?_quantity=4&_price_min=10&_price_max=100 [200 OK, 5.23kB, 479ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve 4 productos
+  ✓  Cada producto tiene nombre, EAN de 13 dígitos e imágenes
+
+↳ FK-03 GET recurso inexistente (negativa 404)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] FK
+  │ -03 GET recurso inexistente (negativa 404)'
+  └
+  GET https://fakerapi.it/api/v2/recurso-que-no-existe [404 Not Found, 389B, 404ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+
+❏ 05 - Open-Meteo
+↳ OM-01 GET pronóstico actual y horario por coordenadas
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] OM
+  │ -01 GET pronóstico actual y horario por coordenadas'[
+  │ 39m
+  └
+  GET https://api.open-meteo.com/v1/forecast?latitude=5.5353&longitude=-73.3678&current=temperature_2m,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m&forecast_days=1&timezone=America%2FBogota [200 OK, 1.43kB, 320ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema de pronóstico
+  ✓  Las coordenadas corresponden a Tunja
+  ✓  Zona horaria America/Bogota
+  ✓  Temperatura en °C y en un rango físico razonable
+  ✓  24 valores horarios para 1 día
+
+↳ OM-02 GET latitud fuera de rango (negativa 400)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] OM
+  │ -02 GET latitud fuera de rango (negativa 400)'
+  └
+  GET https://api.open-meteo.com/v1/forecast?latitude=123&longitude=-73.3678&current=temperature_2m [400 Bad Request, 405B, 108ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 400 Bad Request
+  ✓  Indica error y la razón
+
+❏ 06 - Practice Software Testing (Toolshop)
+↳ PST-01 GET catálogo paginado de productos
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] PS
+  │ T-01 GET catálogo paginado de productos'
+  └
+  GET https://api.practicesoftwaretesting.com/products?page=1 [200 OK, 4.68kB, 1690ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Respuesta paginada (página 1)
+  ✓  Todos los productos tienen precio positivo
+
+↳ PST-02 GET detalle de producto encadenado (esquema)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] PS
+  │ T-02 GET detalle de producto encadenado (esquema)'[39
+  │ m
+  └
+  GET https://api.practicesoftwaretesting.com/products/01M838ZT01BQXJ6S7S3YZXZSZ1 [200 OK, 1.36kB, 561ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema de Product
+  ✓  Corresponde al producto del catálogo
+
+↳ PST-03 GET búsqueda de productos por término (data-driven)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] PS
+  │ T-03 GET búsqueda de productos por término (data-drive
+  │ n)'
+  └
+  GET https://api.practicesoftwaretesting.com/products/search?q=hammer [200 OK, 3.45kB, 600ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Encuentra al menos un resultado
+  ✓  Cada resultado contiene "hammer" en el nombre o la descripción
+
+↳ PST-04 GET marcas disponibles
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] PS
+  │ T-04 GET marcas disponibles'
+  └
+  GET https://api.practicesoftwaretesting.com/brands [200 OK, 532B, 585ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve una lista no vacía de marcas
+  ✓  Cada marca tiene id, name y slug
+
+↳ PST-05 POST login con credenciales inválidas (negativa 401)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] PS
+  │ T-05 POST login con credenciales inválidas (negativa 4
+  │ 01)'
+  └
+  POST https://api.practicesoftwaretesting.com/users/login [401 Unauthorized, 341B, 555ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 401 Unauthorized
+  ✓  No entrega token de acceso
+  ✓  Mensaje Unauthorized
+
+↳ PST-06 GET producto inexistente (negativa 404)
+  ┌
+  │ '[iteración 1 - Tunja - usuario 1 - martillos] PS
+  │ T-06 GET producto inexistente (negativa 404)'
+  └
+  GET https://api.practicesoftwaretesting.com/products/ID-QUE-NO-EXISTE [404 Not Found, 352B, 535ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+  ✓  Mensaje de recurso no encontrado
+
+Iteration 2/2
+
+❏ 01 - JSONPlaceholder
+↳ JP-01 GET listar todos los posts
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -01 GET listar todos los posts'
+  └
+  GET https://jsonplaceholder.typicode.com/posts [200 OK, 28.48kB, 85ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Content-Type es JSON
+  ✓  Devuelve un arreglo de 100 posts
+  ✓  Los ids de los posts son únicos
+
+↳ JP-02 GET obtener post por id (validación de esquema)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -02 GET obtener post por id (validación de esquema)'[
+  │ 39m
+  └
+  GET https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.25kB, 81ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema JSON de Post
+  ✓  El post devuelto es el id 1
+
+↳ JP-03 GET filtrar posts por userId (data-driven)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -03 GET filtrar posts por userId (data-driven)'
+  └
+  GET https://jsonplaceholder.typicode.com/posts?userId=7 [200 OK, 3.71kB, 76ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve 10 posts para el usuario 7
+  ✓  Todos los posts pertenecen al userId solicitado
+
+↳ JP-04 GET comentarios anidados de un post
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -04 GET comentarios anidados de un post'
+  └
+  GET https://jsonplaceholder.typicode.com/posts/1/comments [200 OK, 2.47kB, 75ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve 5 comentarios
+  ✓  Todos los comentarios son del post 1 y tienen email válido
+
+↳ JP-05 POST crear post
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -05 POST crear post'
+  └
+  POST https://jsonplaceholder.typicode.com/posts [201 Created, 1.18kB, 106ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 201 Created
+  ✓  Devuelve el recurso creado con id 101
+  ✓  El título y el userId coinciden con lo enviado
+
+↳ JP-06 PUT reemplazar post
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -06 PUT reemplazar post'
+  └
+  PUT https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.04kB, 116ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El recurso fue reemplazado completo
+
+↳ JP-07 PATCH actualizar parcialmente post
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -07 PATCH actualizar parcialmente post'
+  └
+  PATCH https://jsonplaceholder.typicode.com/posts/1 [200 OK, 1.19kB, 107ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El título cambió
+  ✓  Los demás campos se conservan
+
+↳ JP-08 DELETE eliminar post
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -08 DELETE eliminar post'
+  └
+  DELETE https://jsonplaceholder.typicode.com/posts/1 [200 OK, 912B, 101ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El cuerpo de respuesta es un objeto vacío
+
+↳ JP-09 GET post inexistente (negativa 404)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] JP
+  │ -09 GET post inexistente (negativa 404)'
+  └
+  GET https://jsonplaceholder.typicode.com/posts/99999 [404 Not Found, 922B, 190ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+  ✓  El cuerpo es un objeto vacío
+
+❏ 02 - restful-api.dev (CRUD encadenado)
+↳ RA-01 POST crear objeto
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] RA
+  │ -01 POST crear objeto'
+  └
+  POST https://api.restful-api.dev/objects [200 OK, 1.05kB, 405ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema de Object
+  ✓  Persiste los datos enviados
+  ✓  Asigna id y fecha de creación
+
+↳ RA-02 GET consultar objeto creado
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] RA
+  │ -02 GET consultar objeto creado'
+  └
+  GET https://api.restful-api.dev/objects/ff808181a09d98f701a206955e6c2095 [200 OK, 1.01kB, 458ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve el mismo objeto creado
+
+↳ RA-03 PUT reemplazar objeto
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] RA
+  │ -03 PUT reemplazar objeto'
+  └
+  PUT https://api.restful-api.dev/objects/ff808181a09d98f701a206955e6c2095 [200 OK, 1.02kB, 498ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El objeto fue reemplazado
+  ✓  Registra fecha de actualización
+
+↳ RA-04 PATCH actualizar nombre del objeto
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] RA
+  │ -04 PATCH actualizar nombre del objeto'
+  └
+  PATCH https://api.restful-api.dev/objects/ff808181a09d98f701a206955e6c2095 [200 OK, 1.03kB, 394ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Solo cambia el nombre
+  ✓  Conserva los datos del PUT anterior
+
+↳ RA-05 DELETE eliminar objeto
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] RA
+  │ -05 DELETE eliminar objeto'
+  └
+  DELETE https://api.restful-api.dev/objects/ff808181a09d98f701a206955e6c2095 [200 OK, 957B, 398ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Confirma la eliminación del id
+
+↳ RA-06 GET objeto eliminado (negativa 404)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] RA
+  │ -06 GET objeto eliminado (negativa 404)'
+  └
+  GET https://api.restful-api.dev/objects/ff808181a09d98f701a206955e6c2095 [404 Not Found, 959B, 434ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+  ✓  Mensaje de error indica que no existe
+
+↳ RA-07 PUT sobre id reservado (negativa 405)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] RA
+  │ -07 PUT sobre id reservado (negativa 405)'
+  └
+  PUT https://api.restful-api.dev/objects/7 [405 Method Not Allowed, 1.05kB, 371ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 405 Method Not Allowed
+  ✓  Explica que el id es reservado
+
+❏ 03 - httpbin
+↳ HB-01 GET eco de query params y cabeceras
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] HB
+  │ -01 GET eco de query params y cabeceras'
+  └
+  GET https://httpbin.org/get?curso=electiva-i&ciudad=Bogota [200 OK, 774B, 105ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve los query params enviados
+  ✓  Recibe la cabecera personalizada
+
+↳ HB-02 POST eco de cuerpo JSON
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] HB
+  │ -02 POST eco de cuerpo JSON'
+  └
+  POST https://httpbin.org/post [200 OK, 987B, 102ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  El servidor recibió el JSON intacto
+  ✓  El Content-Type enviado fue application/json
+
+↳ HB-03 PUT eco de formulario urlencoded
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] HB
+  │ -03 PUT eco de formulario urlencoded'
+  └
+  PUT https://httpbin.org/put [200 OK, 851B, 106ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Se recibió el formulario
+  ✓  Content-Type urlencoded
+
+↳ HB-04 DELETE con query param
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] HB
+  │ -04 DELETE con query param'
+  └
+  DELETE https://httpbin.org/delete?id=42 [200 OK, 743B, 97ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Recibe el parámetro del recurso a eliminar
+
+↳ HB-05 HEAD solo cabeceras
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] HB
+  │ -05 HEAD solo cabeceras'
+  └
+  HEAD https://httpbin.org/get [200 OK, 305B, 117ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  No devuelve cuerpo
+  ✓  Incluye cabecera Content-Type
+
+↳ HB-06 OPTIONS métodos permitidos (CORS)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] HB
+  │ -06 OPTIONS métodos permitidos (CORS)'
+  └
+  OPTIONS https://httpbin.org/get [200 OK, 424B, 144ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Declara los métodos permitidos
+
+↳ HB-07 GET código de estado 418 (negativa)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] HB
+  │ -07 GET código de estado 418 (negativa)'
+  └
+  GET https://httpbin.org/status/418 [418 Unknown, 462B, 103ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 418 I'm a teapot
+  ✓  Es un error del lado del cliente (4xx)
+
+❏ 04 - FakerAPI
+↳ FK-01 GET personas con cantidad y locale
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] FK
+  │ -01 GET personas con cantidad y locale'
+  └
+  GET https://fakerapi.it/api/v2/persons?_quantity=5&_locale=en_US [200 OK, 2.8kB, 5.8s]
+  1. Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Respeta la cantidad solicitada
+  ✓  Respeta el locale solicitado
+  ┌
+  │ `Using "tv4" is deprecated. Use "require('ajv')" 
+  │ instead.`
+  └
+  ✓  Cada persona cumple el esquema
+
+↳ FK-02 GET productos con precio e imágenes
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] FK
+  │ -02 GET productos con precio e imágenes'
+  └
+  GET https://fakerapi.it/api/v2/products?_quantity=4&_price_min=10&_price_max=100 [200 OK, 5.02kB, 347ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve 4 productos
+  ✓  Cada producto tiene nombre, EAN de 13 dígitos e imágenes
+
+↳ FK-03 GET recurso inexistente (negativa 404)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] FK
+  │ -03 GET recurso inexistente (negativa 404)'
+  └
+  GET https://fakerapi.it/api/v2/recurso-que-no-existe [404 Not Found, 389B, 379ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+
+❏ 05 - Open-Meteo
+↳ OM-01 GET pronóstico actual y horario por coordenadas
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] OM
+  │ -01 GET pronóstico actual y horario por coordenadas'[
+  │ 39m
+  └
+  GET https://api.open-meteo.com/v1/forecast?latitude=4.711&longitude=-74.0721&current=temperature_2m,relative_humidity_2m,wind_speed_10m&hourly=temperature_2m&forecast_days=1&timezone=America%2FBogota [200 OK, 1.43kB, 109ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema de pronóstico
+  ✓  Las coordenadas corresponden a Bogota
+  ✓  Zona horaria America/Bogota
+  ✓  Temperatura en °C y en un rango físico razonable
+  ✓  24 valores horarios para 1 día
+
+↳ OM-02 GET latitud fuera de rango (negativa 400)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] OM
+  │ -02 GET latitud fuera de rango (negativa 400)'
+  └
+  GET https://api.open-meteo.com/v1/forecast?latitude=123&longitude=-74.0721&current=temperature_2m [400 Bad Request, 405B, 98ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 400 Bad Request
+  ✓  Indica error y la razón
+
+❏ 06 - Practice Software Testing (Toolshop)
+↳ PST-01 GET catálogo paginado de productos
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] PS
+  │ T-01 GET catálogo paginado de productos'
+  └
+  GET https://api.practicesoftwaretesting.com/products?page=1 [200 OK, 4.68kB, 576ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Respuesta paginada (página 1)
+  ✓  Todos los productos tienen precio positivo
+
+↳ PST-02 GET detalle de producto encadenado (esquema)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] PS
+  │ T-02 GET detalle de producto encadenado (esquema)'[39
+  │ m
+  └
+  GET https://api.practicesoftwaretesting.com/products/01M838ZT01BQXJ6S7S3YZXZSZ1 [200 OK, 1.36kB, 559ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Cumple el esquema de Product
+  ✓  Corresponde al producto del catálogo
+
+↳ PST-03 GET búsqueda de productos por término (data-driven)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] PS
+  │ T-03 GET búsqueda de productos por término (data-drive
+  │ n)'
+  └
+  GET https://api.practicesoftwaretesting.com/products/search?q=pliers [200 OK, 2.52kB, 586ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Encuentra al menos un resultado
+  ✓  Cada resultado contiene "pliers" en el nombre o la descripción
+
+↳ PST-04 GET marcas disponibles
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] PS
+  │ T-04 GET marcas disponibles'
+  └
+  GET https://api.practicesoftwaretesting.com/brands [200 OK, 532B, 565ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 200 OK
+  ✓  Devuelve una lista no vacía de marcas
+  ✓  Cada marca tiene id, name y slug
+
+↳ PST-05 POST login con credenciales inválidas (negativa 401)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] PS
+  │ T-05 POST login con credenciales inválidas (negativa 4
+  │ 01)'
+  └
+  POST https://api.practicesoftwaretesting.com/users/login [401 Unauthorized, 341B, 563ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 401 Unauthorized
+  ✓  No entrega token de acceso
+  ✓  Mensaje Unauthorized
+
+↳ PST-06 GET producto inexistente (negativa 404)
+  ┌
+  │ '[iteración 2 - Bogota - usuario 7 - alicates] PS
+  │ T-06 GET producto inexistente (negativa 404)'
+  └
+  GET https://api.practicesoftwaretesting.com/products/ID-QUE-NO-EXISTE [404 Not Found, 352B, 565ms]
+  ✓  Tiempo de respuesta menor a 5000 ms
+  ✓  Status 404 Not Found
+  ✓  Mensaje de recurso no encontrado
+
+┌─────────────────────────┬────────────────────┬───────────────────┐
+│                         │           executed │            failed │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│              iterations │                  2 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│                requests │                 68 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│            test-scripts │                136 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│      prerequest-scripts │                 68 │                 0 │
+├─────────────────────────┼────────────────────┼───────────────────┤
+│              assertions │                256 │                 1 │
+├─────────────────────────┴────────────────────┴───────────────────┤
+│ total run duration: 28.6s                                        │
+├──────────────────────────────────────────────────────────────────┤
+│ total data received: 103.5kB (approx)                            │
+├──────────────────────────────────────────────────────────────────┤
+│ average response time: 399ms [min: 75ms, max: 5.8s, s.d.: 713ms] │
+└──────────────────────────────────────────────────────────────────┘
+
+  #  failure         detail                                                            
+                                                                                       
+ 1.  AssertionError  Tiempo de respuesta menor a 5000 ms                               
+     iteration: 2    expected 5816 to be below 5000                                    
+                     at assertion:0 in test-script                                     
+                     inside "04 - FakerAPI / FK-01 GET personas con cantidad y locale" 

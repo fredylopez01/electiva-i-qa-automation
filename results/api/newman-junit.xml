@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Reto Final Electiva I - API Testing (Integrante 2)" tests="68" time="27.143">
+  <testsuite name="01 - JSONPlaceholder / JP-01 GET listar todos los posts" id="bc240668-1abf-40cc-9bb0-43d7f1c264ae" timestamp="2026-11-23T04:06:07.650Z" tests="5" failures="0" errors="0" time="0.186">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.085" classname="01JsonPlaceholderJp01GetListarTodosLosPosts"/>
+    <testcase name="Status 200 OK" time="0.085" classname="01JsonPlaceholderJp01GetListarTodosLosPosts"/>
+    <testcase name="Content-Type es JSON" time="0.085" classname="01JsonPlaceholderJp01GetListarTodosLosPosts"/>
+    <testcase name="Devuelve un arreglo de 100 posts" time="0.085" classname="01JsonPlaceholderJp01GetListarTodosLosPosts"/>
+    <testcase name="Los ids de los posts son únicos" time="0.085" classname="01JsonPlaceholderJp01GetListarTodosLosPosts"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-02 GET obtener post por id (validación de esquema)" id="f0da54b6-1eea-417f-817f-4b5aca933fef" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.086">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.081" classname="01JsonPlaceholderJp02GetObtenerPostPorIdValidacionDeEsquema"/>
+    <testcase name="Status 200 OK" time="0.081" classname="01JsonPlaceholderJp02GetObtenerPostPorIdValidacionDeEsquema"/>
+    <testcase name="Cumple el esquema JSON de Post" time="0.081" classname="01JsonPlaceholderJp02GetObtenerPostPorIdValidacionDeEsquema"/>
+    <testcase name="El post devuelto es el id 1" time="0.081" classname="01JsonPlaceholderJp02GetObtenerPostPorIdValidacionDeEsquema"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-03 GET filtrar posts por userId (data-driven)" id="a2cf69ff-cd25-48e6-8bb0-fd81618ce398" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.087">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.076" classname="01JsonPlaceholderJp03GetFiltrarPostsPorUserIdDataDriven"/>
+    <testcase name="Status 200 OK" time="0.076" classname="01JsonPlaceholderJp03GetFiltrarPostsPorUserIdDataDriven"/>
+    <testcase name="Devuelve 10 posts para el usuario 1" time="0.076" classname="01JsonPlaceholderJp03GetFiltrarPostsPorUserIdDataDriven"/>
+    <testcase name="Todos los posts pertenecen al userId solicitado" time="0.076" classname="01JsonPlaceholderJp03GetFiltrarPostsPorUserIdDataDriven"/>
+    <testcase name="Devuelve 10 posts para el usuario 7" time="0.076" classname="01JsonPlaceholderJp03GetFiltrarPostsPorUserIdDataDriven"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-04 GET comentarios anidados de un post" id="27f61693-89b8-485f-8ee0-9d3636c3da1d" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.083">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.075" classname="01JsonPlaceholderJp04GetComentariosAnidadosDeUnPost"/>
+    <testcase name="Status 200 OK" time="0.075" classname="01JsonPlaceholderJp04GetComentariosAnidadosDeUnPost"/>
+    <testcase name="Devuelve 5 comentarios" time="0.075" classname="01JsonPlaceholderJp04GetComentariosAnidadosDeUnPost"/>
+    <testcase name="Todos los comentarios son del post 1 y tienen email válido" time="0.075" classname="01JsonPlaceholderJp04GetComentariosAnidadosDeUnPost"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-05 POST crear post" id="8144b7f0-6e97-4e39-9127-4581f7384f2d" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.145">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.106" classname="01JsonPlaceholderJp05PostCrearPost"/>
+    <testcase name="Status 201 Created" time="0.106" classname="01JsonPlaceholderJp05PostCrearPost"/>
+    <testcase name="Devuelve el recurso creado con id 101" time="0.106" classname="01JsonPlaceholderJp05PostCrearPost"/>
+    <testcase name="El título y el userId coinciden con lo enviado" time="0.106" classname="01JsonPlaceholderJp05PostCrearPost"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-06 PUT reemplazar post" id="5747b4ea-50fa-4d72-bf8e-f80ba153f5ef" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.129">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.116" classname="01JsonPlaceholderJp06PutReemplazarPost"/>
+    <testcase name="Status 200 OK" time="0.116" classname="01JsonPlaceholderJp06PutReemplazarPost"/>
+    <testcase name="El recurso fue reemplazado completo" time="0.116" classname="01JsonPlaceholderJp06PutReemplazarPost"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-07 PATCH actualizar parcialmente post" id="5f8b3fd6-917b-4b0c-8924-1a20de3882ae" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.116">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.107" classname="01JsonPlaceholderJp07PatchActualizarParcialmentePost"/>
+    <testcase name="Status 200 OK" time="0.107" classname="01JsonPlaceholderJp07PatchActualizarParcialmentePost"/>
+    <testcase name="El título cambió" time="0.107" classname="01JsonPlaceholderJp07PatchActualizarParcialmentePost"/>
+    <testcase name="Los demás campos se conservan" time="0.107" classname="01JsonPlaceholderJp07PatchActualizarParcialmentePost"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-08 DELETE eliminar post" id="e2adc198-083f-4961-b22e-3feae8b07778" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.117">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.101" classname="01JsonPlaceholderJp08DeleteEliminarPost"/>
+    <testcase name="Status 200 OK" time="0.101" classname="01JsonPlaceholderJp08DeleteEliminarPost"/>
+    <testcase name="El cuerpo de respuesta es un objeto vacío" time="0.101" classname="01JsonPlaceholderJp08DeleteEliminarPost"/>
+  </testsuite>
+  <testsuite name="01 - JSONPlaceholder / JP-09 GET post inexistente (negativa 404)" id="803b2ae9-8015-40a4-b650-26c35098353a" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.137">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.190" classname="01JsonPlaceholderJp09GetPostInexistenteNegativa404"/>
+    <testcase name="Status 404 Not Found" time="0.190" classname="01JsonPlaceholderJp09GetPostInexistenteNegativa404"/>
+    <testcase name="El cuerpo es un objeto vacío" time="0.190" classname="01JsonPlaceholderJp09GetPostInexistenteNegativa404"/>
+  </testsuite>
+  <testsuite name="02 - restful-api.dev (CRUD encadenado) / RA-01 POST crear objeto" id="41ab2209-e883-4770-adba-c459e24f77f5" timestamp="2026-11-23T04:06:07.650Z" tests="5" failures="0" errors="0" time="0.569">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.405" classname="02RestfulApiDevCrudEncadenadoRa01PostCrearObjeto"/>
+    <testcase name="Status 200 OK" time="0.405" classname="02RestfulApiDevCrudEncadenadoRa01PostCrearObjeto"/>
+    <testcase name="Cumple el esquema de Object" time="0.405" classname="02RestfulApiDevCrudEncadenadoRa01PostCrearObjeto"/>
+    <testcase name="Persiste los datos enviados" time="0.405" classname="02RestfulApiDevCrudEncadenadoRa01PostCrearObjeto"/>
+    <testcase name="Asigna id y fecha de creación" time="0.405" classname="02RestfulApiDevCrudEncadenadoRa01PostCrearObjeto"/>
+  </testsuite>
+  <testsuite name="02 - restful-api.dev (CRUD encadenado) / RA-02 GET consultar objeto creado" id="1a767cbe-ec65-4a62-aa7e-89fd4564a6b0" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.418">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.458" classname="02RestfulApiDevCrudEncadenadoRa02GetConsultarObjetoCreado"/>
+    <testcase name="Status 200 OK" time="0.458" classname="02RestfulApiDevCrudEncadenadoRa02GetConsultarObjetoCreado"/>
+    <testcase name="Devuelve el mismo objeto creado" time="0.458" classname="02RestfulApiDevCrudEncadenadoRa02GetConsultarObjetoCreado"/>
+  </testsuite>
+  <testsuite name="02 - restful-api.dev (CRUD encadenado) / RA-03 PUT reemplazar objeto" id="e9b97489-e375-4906-ad95-e576bb691c77" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.440">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.498" classname="02RestfulApiDevCrudEncadenadoRa03PutReemplazarObjeto"/>
+    <testcase name="Status 200 OK" time="0.498" classname="02RestfulApiDevCrudEncadenadoRa03PutReemplazarObjeto"/>
+    <testcase name="El objeto fue reemplazado" time="0.498" classname="02RestfulApiDevCrudEncadenadoRa03PutReemplazarObjeto"/>
+    <testcase name="Registra fecha de actualización" time="0.498" classname="02RestfulApiDevCrudEncadenadoRa03PutReemplazarObjeto"/>
+  </testsuite>
+  <testsuite name="02 - restful-api.dev (CRUD encadenado) / RA-04 PATCH actualizar nombre del objeto" id="90ea5bc3-6086-4324-b24e-5854998c46e5" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.449">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.394" classname="02RestfulApiDevCrudEncadenadoRa04PatchActualizarNombreDelObjeto"/>
+    <testcase name="Status 200 OK" time="0.394" classname="02RestfulApiDevCrudEncadenadoRa04PatchActualizarNombreDelObjeto"/>
+    <testcase name="Solo cambia el nombre" time="0.394" classname="02RestfulApiDevCrudEncadenadoRa04PatchActualizarNombreDelObjeto"/>
+    <testcase name="Conserva los datos del PUT anterior" time="0.394" classname="02RestfulApiDevCrudEncadenadoRa04PatchActualizarNombreDelObjeto"/>
+  </testsuite>
+  <testsuite name="02 - restful-api.dev (CRUD encadenado) / RA-05 DELETE eliminar objeto" id="15a9e8b2-21c3-4ffb-8316-8418d707f567" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.392">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.398" classname="02RestfulApiDevCrudEncadenadoRa05DeleteEliminarObjeto"/>
+    <testcase name="Status 200 OK" time="0.398" classname="02RestfulApiDevCrudEncadenadoRa05DeleteEliminarObjeto"/>
+    <testcase name="Confirma la eliminación del id" time="0.398" classname="02RestfulApiDevCrudEncadenadoRa05DeleteEliminarObjeto"/>
+  </testsuite>
+  <testsuite name="02 - restful-api.dev (CRUD encadenado) / RA-06 GET objeto eliminado (negativa 404)" id="f4bba715-0bcb-4099-bedf-0a5ba7e27b5a" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.465">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.434" classname="02RestfulApiDevCrudEncadenadoRa06GetObjetoEliminadoNegativa404"/>
+    <testcase name="Status 404 Not Found" time="0.434" classname="02RestfulApiDevCrudEncadenadoRa06GetObjetoEliminadoNegativa404"/>
+    <testcase name="Mensaje de error indica que no existe" time="0.434" classname="02RestfulApiDevCrudEncadenadoRa06GetObjetoEliminadoNegativa404"/>
+  </testsuite>
+  <testsuite name="02 - restful-api.dev (CRUD encadenado) / RA-07 PUT sobre id reservado (negativa 405)" id="a75f2c99-11b2-4358-9ca4-fafeb45718cf" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.392">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.371" classname="02RestfulApiDevCrudEncadenadoRa07PutSobreIdReservadoNegativa405"/>
+    <testcase name="Status 405 Method Not Allowed" time="0.371" classname="02RestfulApiDevCrudEncadenadoRa07PutSobreIdReservadoNegativa405"/>
+    <testcase name="Explica que el id es reservado" time="0.371" classname="02RestfulApiDevCrudEncadenadoRa07PutSobreIdReservadoNegativa405"/>
+  </testsuite>
+  <testsuite name="03 - httpbin / HB-01 GET eco de query params y cabeceras" id="3335c4fd-4628-406f-8428-cb1bd45616de" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.215">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.105" classname="03HttpbinHb01GetEcoDeQueryParamsYCabeceras"/>
+    <testcase name="Status 200 OK" time="0.105" classname="03HttpbinHb01GetEcoDeQueryParamsYCabeceras"/>
+    <testcase name="Devuelve los query params enviados" time="0.105" classname="03HttpbinHb01GetEcoDeQueryParamsYCabeceras"/>
+    <testcase name="Recibe la cabecera personalizada" time="0.105" classname="03HttpbinHb01GetEcoDeQueryParamsYCabeceras"/>
+  </testsuite>
+  <testsuite name="03 - httpbin / HB-02 POST eco de cuerpo JSON" id="21277abb-4a17-40b5-af4d-d051a317e93b" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.102">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.102" classname="03HttpbinHb02PostEcoDeCuerpoJson"/>
+    <testcase name="Status 200 OK" time="0.102" classname="03HttpbinHb02PostEcoDeCuerpoJson"/>
+    <testcase name="El servidor recibió el JSON intacto" time="0.102" classname="03HttpbinHb02PostEcoDeCuerpoJson"/>
+    <testcase name="El Content-Type enviado fue application/json" time="0.102" classname="03HttpbinHb02PostEcoDeCuerpoJson"/>
+  </testsuite>
+  <testsuite name="03 - httpbin / HB-03 PUT eco de formulario urlencoded" id="05b5fde3-e1cb-413e-a558-06cd5236475a" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.102">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.106" classname="03HttpbinHb03PutEcoDeFormularioUrlencoded"/>
+    <testcase name="Status 200 OK" time="0.106" classname="03HttpbinHb03PutEcoDeFormularioUrlencoded"/>
+    <testcase name="Se recibió el formulario" time="0.106" classname="03HttpbinHb03PutEcoDeFormularioUrlencoded"/>
+    <testcase name="Content-Type urlencoded" time="0.106" classname="03HttpbinHb03PutEcoDeFormularioUrlencoded"/>
+  </testsuite>
+  <testsuite name="03 - httpbin / HB-04 DELETE con query param" id="32d5ec07-ac2a-42bb-8b57-5b3ff9b3f2b1" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.099">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.097" classname="03HttpbinHb04DeleteConQueryParam"/>
+    <testcase name="Status 200 OK" time="0.097" classname="03HttpbinHb04DeleteConQueryParam"/>
+    <testcase name="Recibe el parámetro del recurso a eliminar" time="0.097" classname="03HttpbinHb04DeleteConQueryParam"/>
+  </testsuite>
+  <testsuite name="03 - httpbin / HB-05 HEAD solo cabeceras" id="1e6976ac-e991-4862-b922-c47f93acb861" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.110">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.117" classname="03HttpbinHb05HeadSoloCabeceras"/>
+    <testcase name="Status 200 OK" time="0.117" classname="03HttpbinHb05HeadSoloCabeceras"/>
+    <testcase name="No devuelve cuerpo" time="0.117" classname="03HttpbinHb05HeadSoloCabeceras"/>
+    <testcase name="Incluye cabecera Content-Type" time="0.117" classname="03HttpbinHb05HeadSoloCabeceras"/>
+  </testsuite>
+  <testsuite name="03 - httpbin / HB-06 OPTIONS métodos permitidos (CORS)" id="52a4e6ef-c7fd-43f6-8982-a1c51d7a1e9c" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.123">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.144" classname="03HttpbinHb06OptionsMetodosPermitidosCors"/>
+    <testcase name="Status 200 OK" time="0.144" classname="03HttpbinHb06OptionsMetodosPermitidosCors"/>
+    <testcase name="Declara los métodos permitidos" time="0.144" classname="03HttpbinHb06OptionsMetodosPermitidosCors"/>
+  </testsuite>
+  <testsuite name="03 - httpbin / HB-07 GET código de estado 418 (negativa)" id="8b21783a-1cf7-455a-8c1b-ac95b3ded629" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.113">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.103" classname="03HttpbinHb07GetCodigoDeEstado418Negativa"/>
+    <testcase name="Status 418 I'm a teapot" time="0.103" classname="03HttpbinHb07GetCodigoDeEstado418Negativa"/>
+    <testcase name="Es un error del lado del cliente (4xx)" time="0.103" classname="03HttpbinHb07GetCodigoDeEstado418Negativa"/>
+  </testsuite>
+  <testsuite name="04 - FakerAPI / FK-01 GET personas con cantidad y locale" id="7a486137-c97c-4041-9e4c-ed7eae8ce412" timestamp="2026-11-23T04:06:07.650Z" tests="5" failures="1" errors="0" time="3.406">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="5.816" classname="04FakerApiFk01GetPersonasConCantidadYLocale">
+      <failure type="AssertionFailure" message="expected 5816 to be below 5000">
+        <![CDATA[Failed 1 times.]]>
+        <![CDATA[Collection JSON ID: 3c3e1b8e-5f0d-4b7a-9d55-2b1f6f1f0a20.]]>
+        <![CDATA[Collection name: Reto Final Electiva I - API Testing (Integrante 2).]]>
+        <![CDATA[Request name: 04 - FakerAPI / FK-01 GET personas con cantidad y locale.]]>
+        <![CDATA[Test description: Tiempo de respuesta menor a 5000 ms.]]>
+        <![CDATA[Error message: expected 5816 to be below 5000.]]>
+        <![CDATA[Stacktrace: AssertionError: expected 5816 to be below 5000
+   at Object.eval sandbox-script.js:1:24).]]>
+      </failure>
+    </testcase>
+    <testcase name="Status 200 OK" time="5.816" classname="04FakerApiFk01GetPersonasConCantidadYLocale"/>
+    <testcase name="Respeta la cantidad solicitada" time="5.816" classname="04FakerApiFk01GetPersonasConCantidadYLocale"/>
+    <testcase name="Respeta el locale solicitado" time="5.816" classname="04FakerApiFk01GetPersonasConCantidadYLocale"/>
+    <testcase name="Cada persona cumple el esquema" time="5.816" classname="04FakerApiFk01GetPersonasConCantidadYLocale"/>
+  </testsuite>
+  <testsuite name="04 - FakerAPI / FK-02 GET productos con precio e imágenes" id="fa5b8733-d22f-40ed-9fba-20323b7c388d" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.413">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.347" classname="04FakerApiFk02GetProductosConPrecioEImagenes"/>
+    <testcase name="Status 200 OK" time="0.347" classname="04FakerApiFk02GetProductosConPrecioEImagenes"/>
+    <testcase name="Devuelve 4 productos" time="0.347" classname="04FakerApiFk02GetProductosConPrecioEImagenes"/>
+    <testcase name="Cada producto tiene nombre, EAN de 13 dígitos e imágenes" time="0.347" classname="04FakerApiFk02GetProductosConPrecioEImagenes"/>
+  </testsuite>
+  <testsuite name="04 - FakerAPI / FK-03 GET recurso inexistente (negativa 404)" id="fcfd6422-1788-4873-a52b-8516d7c5ad15" timestamp="2026-11-23T04:06:07.650Z" tests="2" failures="0" errors="0" time="0.392">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.379" classname="04FakerApiFk03GetRecursoInexistenteNegativa404"/>
+    <testcase name="Status 404 Not Found" time="0.379" classname="04FakerApiFk03GetRecursoInexistenteNegativa404"/>
+  </testsuite>
+  <testsuite name="05 - Open-Meteo / OM-01 GET pronóstico actual y horario por coordenadas" id="4ddf7be0-e8fd-48df-bd04-3a1b7ccf4a08" timestamp="2026-11-23T04:06:07.650Z" tests="7" failures="0" errors="0" time="0.214">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+    <testcase name="Status 200 OK" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+    <testcase name="Cumple el esquema de pronóstico" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+    <testcase name="Las coordenadas corresponden a Tunja" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+    <testcase name="Zona horaria America/Bogota" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+    <testcase name="Temperatura en °C y en un rango físico razonable" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+    <testcase name="24 valores horarios para 1 día" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+    <testcase name="Las coordenadas corresponden a Bogota" time="0.109" classname="05OpenMeteoOm01GetPronosticoActualYHorarioPorCoordenadas"/>
+  </testsuite>
+  <testsuite name="05 - Open-Meteo / OM-02 GET latitud fuera de rango (negativa 400)" id="85f249bd-1630-4614-ad8f-63a768b2b4fe" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.103">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.098" classname="05OpenMeteoOm02GetLatitudFueraDeRangoNegativa400"/>
+    <testcase name="Status 400 Bad Request" time="0.098" classname="05OpenMeteoOm02GetLatitudFueraDeRangoNegativa400"/>
+    <testcase name="Indica error y la razón" time="0.098" classname="05OpenMeteoOm02GetLatitudFueraDeRangoNegativa400"/>
+  </testsuite>
+  <testsuite name="06 - Practice Software Testing (Toolshop) / PST-01 GET catálogo paginado de productos" id="94ac2b46-b8f0-41e8-a037-44b1e1ba164f" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="1.133">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.576" classname="06PracticeSoftwareTestingToolshopPst01GetCatalogoPaginadoDeProductos"/>
+    <testcase name="Status 200 OK" time="0.576" classname="06PracticeSoftwareTestingToolshopPst01GetCatalogoPaginadoDeProductos"/>
+    <testcase name="Respuesta paginada (página 1)" time="0.576" classname="06PracticeSoftwareTestingToolshopPst01GetCatalogoPaginadoDeProductos"/>
+    <testcase name="Todos los productos tienen precio positivo" time="0.576" classname="06PracticeSoftwareTestingToolshopPst01GetCatalogoPaginadoDeProductos"/>
+  </testsuite>
+  <testsuite name="06 - Practice Software Testing (Toolshop) / PST-02 GET detalle de producto encadenado (esquema)" id="66316ad2-a084-4f3c-b004-9e468271273b" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.560">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.559" classname="06PracticeSoftwareTestingToolshopPst02GetDetalleDeProductoEncadenadoEsquema"/>
+    <testcase name="Status 200 OK" time="0.559" classname="06PracticeSoftwareTestingToolshopPst02GetDetalleDeProductoEncadenadoEsquema"/>
+    <testcase name="Cumple el esquema de Product" time="0.559" classname="06PracticeSoftwareTestingToolshopPst02GetDetalleDeProductoEncadenadoEsquema"/>
+    <testcase name="Corresponde al producto del catálogo" time="0.559" classname="06PracticeSoftwareTestingToolshopPst02GetDetalleDeProductoEncadenadoEsquema"/>
+  </testsuite>
+  <testsuite name="06 - Practice Software Testing (Toolshop) / PST-03 GET búsqueda de productos por término (data-driven)" id="006e2ba1-824e-4788-b765-a22d121be8bb" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.593">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.586" classname="06PracticeSoftwareTestingToolshopPst03GetBusquedaDeProductosPorTerminoDataDriven"/>
+    <testcase name="Status 200 OK" time="0.586" classname="06PracticeSoftwareTestingToolshopPst03GetBusquedaDeProductosPorTerminoDataDriven"/>
+    <testcase name="Encuentra al menos un resultado" time="0.586" classname="06PracticeSoftwareTestingToolshopPst03GetBusquedaDeProductosPorTerminoDataDriven"/>
+    <testcase name="Cada resultado contiene &quot;hammer&quot; en el nombre o la descripción" time="0.586" classname="06PracticeSoftwareTestingToolshopPst03GetBusquedaDeProductosPorTerminoDataDriven"/>
+    <testcase name="Cada resultado contiene &quot;pliers&quot; en el nombre o la descripción" time="0.586" classname="06PracticeSoftwareTestingToolshopPst03GetBusquedaDeProductosPorTerminoDataDriven"/>
+  </testsuite>
+  <testsuite name="06 - Practice Software Testing (Toolshop) / PST-04 GET marcas disponibles" id="41f5dc6e-fe1b-4f76-a826-0552e030ea8e" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.575">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.565" classname="06PracticeSoftwareTestingToolshopPst04GetMarcasDisponibles"/>
+    <testcase name="Status 200 OK" time="0.565" classname="06PracticeSoftwareTestingToolshopPst04GetMarcasDisponibles"/>
+    <testcase name="Devuelve una lista no vacía de marcas" time="0.565" classname="06PracticeSoftwareTestingToolshopPst04GetMarcasDisponibles"/>
+    <testcase name="Cada marca tiene id, name y slug" time="0.565" classname="06PracticeSoftwareTestingToolshopPst04GetMarcasDisponibles"/>
+  </testsuite>
+  <testsuite name="06 - Practice Software Testing (Toolshop) / PST-05 POST login con credenciales inválidas (negativa 401)" id="b671abf4-c97e-48f6-9ec4-4def7ec27cfa" timestamp="2026-11-23T04:06:07.650Z" tests="4" failures="0" errors="0" time="0.559">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.563" classname="06PracticeSoftwareTestingToolshopPst05PostLoginConCredencialesInvalidasNegativa401"/>
+    <testcase name="Status 401 Unauthorized" time="0.563" classname="06PracticeSoftwareTestingToolshopPst05PostLoginConCredencialesInvalidasNegativa401"/>
+    <testcase name="No entrega token de acceso" time="0.563" classname="06PracticeSoftwareTestingToolshopPst05PostLoginConCredencialesInvalidasNegativa401"/>
+    <testcase name="Mensaje Unauthorized" time="0.563" classname="06PracticeSoftwareTestingToolshopPst05PostLoginConCredencialesInvalidasNegativa401"/>
+  </testsuite>
+  <testsuite name="06 - Practice Software Testing (Toolshop) / PST-06 GET producto inexistente (negativa 404)" id="897240ba-a341-450e-be08-23184755e704" timestamp="2026-11-23T04:06:07.650Z" tests="3" failures="0" errors="0" time="0.550">
+    <testcase name="Tiempo de respuesta menor a 5000 ms" time="0.565" classname="06PracticeSoftwareTestingToolshopPst06GetProductoInexistenteNegativa404"/>
+    <testcase name="Status 404 Not Found" time="0.565" classname="06PracticeSoftwareTestingToolshopPst06GetProductoInexistenteNegativa404"/>
+    <testcase name="Mensaje de recurso no encontrado" time="0.565" classname="06PracticeSoftwareTestingToolshopPst06GetProductoInexistenteNegativa404"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,256 @@
+timestamp,contenedor,cpu_pct,mem_uso,mem_pct,pids
+1795409290,prestashop-stress-prestashop-1,49.78,118.6MiB / 2GiB,5.79,9
+1795409290,prestashop-stress-mysql-1,9.77,418.3MiB / 1GiB,40.85,41
+1795409290,jmeter-host,32.2,395MiB,,
+1795409294,prestashop-stress-prestashop-1,170.55,399.8MiB / 2GiB,19.52,37
+1795409294,prestashop-stress-mysql-1,99.76,547.3MiB / 1GiB,53.45,106
+1795409294,jmeter-host,13.3,326MiB,,
+1795409299,prestashop-stress-prestashop-1,201.80,1.014GiB / 2GiB,50.71,110
+1795409299,prestashop-stress-mysql-1,97.66,580MiB / 1GiB,56.64,152
+1795409299,jmeter-host,20.9,345MiB,,
+1795409302,prestashop-stress-prestashop-1,204.87,1.414GiB / 2GiB,70.72,151
+1795409302,prestashop-stress-mysql-1,102.56,632.1MiB / 1GiB,61.73,201
+1795409302,jmeter-host,19.1,309MiB,,
+1795409306,prestashop-stress-prestashop-1,155.76,1.536GiB / 2GiB,76.81,151
+1795409306,prestashop-stress-mysql-1,100.74,660MiB / 1GiB,64.45,227
+1795409306,jmeter-host,8.5,369MiB,,
+1795409310,prestashop-stress-prestashop-1,152.25,1.546GiB / 2GiB,77.31,151
+1795409310,prestashop-stress-mysql-1,99.02,684.6MiB / 1GiB,66.85,215
+1795409310,jmeter-host,7.0,389MiB,,
+1795409313,prestashop-stress-prestashop-1,161.33,1.546GiB / 2GiB,77.30,151
+1795409313,prestashop-stress-mysql-1,101.19,699.7MiB / 1GiB,68.33,196
+1795409313,jmeter-host,6.2,383MiB,,
+1795409317,prestashop-stress-prestashop-1,154.26,1.534GiB / 2GiB,76.69,151
+1795409317,prestashop-stress-mysql-1,100.15,714.8MiB / 1GiB,69.80,197
+1795409317,jmeter-host,3.3,274MiB,,
+1795409321,prestashop-stress-prestashop-1,151.94,1.578GiB / 2GiB,78.88,151
+1795409321,prestashop-stress-mysql-1,100.15,725.5MiB / 1GiB,70.85,231
+1795409321,jmeter-host,2.1,316MiB,,
+1795409324,prestashop-stress-prestashop-1,152.32,1.547GiB / 2GiB,77.37,151
+1795409324,prestashop-stress-mysql-1,100.41,730.1MiB / 1GiB,71.30,199
+1795409324,jmeter-host,8.6,367MiB,,
+1795409328,prestashop-stress-prestashop-1,153.44,1.554GiB / 2GiB,77.70,151
+1795409328,prestashop-stress-mysql-1,100.38,740.8MiB / 1GiB,72.35,203
+1795409328,jmeter-host,2.3,384MiB,,
+1795409331,prestashop-stress-prestashop-1,155.49,1.537GiB / 2GiB,76.85,151
+1795409331,prestashop-stress-mysql-1,100.41,749MiB / 1GiB,73.14,198
+1795409331,jmeter-host,7.8,281MiB,,
+1795409334,prestashop-stress-prestashop-1,190.08,1.531GiB / 2GiB,76.57,151
+1795409334,prestashop-stress-mysql-1,100.22,752.9MiB / 1GiB,73.52,190
+1795409334,jmeter-host,13.2,244MiB,,
+1795409339,prestashop-stress-prestashop-1,197.67,1.53GiB / 2GiB,76.51,151
+1795409339,prestashop-stress-mysql-1,102.70,755.3MiB / 1GiB,73.76,174
+1795409339,jmeter-host,6.9,233MiB,,
+1795409342,prestashop-stress-prestashop-1,143.98,1.533GiB / 2GiB,76.66,151
+1795409342,prestashop-stress-mysql-1,100.16,773.1MiB / 1GiB,75.50,226
+1795409342,jmeter-host,2.1,354MiB,,
+1795409346,prestashop-stress-prestashop-1,152.74,1.514GiB / 2GiB,75.70,151
+1795409346,prestashop-stress-mysql-1,101.46,779.4MiB / 1GiB,76.11,202
+1795409346,jmeter-host,1.3,314MiB,,
+1795409349,prestashop-stress-prestashop-1,160.89,1.545GiB / 2GiB,77.24,151
+1795409349,prestashop-stress-mysql-1,100.76,784.6MiB / 1GiB,76.62,248
+1795409349,jmeter-host,3.4,245MiB,,
+1795409352,prestashop-stress-prestashop-1,132.57,1.5GiB / 2GiB,74.98,151
+1795409352,prestashop-stress-mysql-1,99.35,846.3MiB / 1GiB,82.64,189
+1795409352,jmeter-host,1.6,228MiB,,
+1795409355,prestashop-stress-prestashop-1,140.74,1.525GiB / 2GiB,76.25,151
+1795409355,prestashop-stress-mysql-1,100.58,858.2MiB / 1GiB,83.81,197
+1795409355,jmeter-host,2.0,247MiB,,
+1795409359,prestashop-stress-prestashop-1,165.19,1.543GiB / 2GiB,77.16,151
+1795409359,prestashop-stress-mysql-1,99.38,859MiB / 1GiB,83.88,197
+1795409359,jmeter-host,2.1,121MiB,,
+1795409362,prestashop-stress-prestashop-1,164.06,1.565GiB / 2GiB,78.24,151
+1795409362,prestashop-stress-mysql-1,102.75,863.7MiB / 1GiB,84.34,239
+1795409362,jmeter-host,14.8,150MiB,,
+1795409365,prestashop-stress-prestashop-1,163.51,1.556GiB / 2GiB,77.80,151
+1795409365,prestashop-stress-mysql-1,99.93,865.7MiB / 1GiB,84.55,236
+1795409365,jmeter-host,5.1,137MiB,,
+1795409368,prestashop-stress-prestashop-1,164.16,1.572GiB / 2GiB,78.60,151
+1795409368,prestashop-stress-mysql-1,99.85,868.4MiB / 1GiB,84.81,241
+1795409368,jmeter-host,14.4,275MiB,,
+1795409372,prestashop-stress-prestashop-1,162.66,1.59GiB / 2GiB,79.52,151
+1795409372,prestashop-stress-mysql-1,100.09,877.2MiB / 1GiB,85.67,212
+1795409372,jmeter-host,9.3,268MiB,,
+1795409376,prestashop-stress-prestashop-1,155.19,1.583GiB / 2GiB,79.17,151
+1795409376,prestashop-stress-mysql-1,100.36,880.9MiB / 1GiB,86.03,212
+1795409376,jmeter-host,14.3,445MiB,,
+1795409381,prestashop-stress-prestashop-1,164.27,1.582GiB / 2GiB,79.11,151
+1795409381,prestashop-stress-mysql-1,101.84,888.1MiB / 1GiB,86.73,251
+1795409381,jmeter-host,0.9,235MiB,,
+1795409385,prestashop-stress-prestashop-1,160.14,1.57GiB / 2GiB,78.52,151
+1795409385,prestashop-stress-mysql-1,100.68,885.6MiB / 1GiB,86.48,217
+1795409385,jmeter-host,2.4,313MiB,,
+1795409388,prestashop-stress-prestashop-1,138.61,1.573GiB / 2GiB,78.66,151
+1795409388,prestashop-stress-mysql-1,106.86,888.7MiB / 1GiB,86.79,222
+1795409388,jmeter-host,1.4,122MiB,,
+1795409391,prestashop-stress-prestashop-1,157.47,1.562GiB / 2GiB,78.12,151
+1795409391,prestashop-stress-mysql-1,104.54,890MiB / 1GiB,86.92,234
+1795409391,jmeter-host,15.4,227MiB,,
+1795409395,prestashop-stress-prestashop-1,162.60,1.614GiB / 2GiB,80.71,151
+1795409395,prestashop-stress-mysql-1,100.23,893.2MiB / 1GiB,87.23,242
+1795409395,jmeter-host,1.7,291MiB,,
+1795409398,prestashop-stress-prestashop-1,136.01,1.581GiB / 2GiB,79.07,151
+1795409398,prestashop-stress-mysql-1,99.86,896.8MiB / 1GiB,87.58,188
+1795409398,jmeter-host,6.5,303MiB,,
+1795409402,prestashop-stress-prestashop-1,154.31,1.566GiB / 2GiB,78.28,151
+1795409402,prestashop-stress-mysql-1,100.10,901.6MiB / 1GiB,88.04,216
+1795409402,jmeter-host,1.4,295MiB,,
+1795409406,prestashop-stress-prestashop-1,159.91,1.557GiB / 2GiB,77.83,151
+1795409406,prestashop-stress-mysql-1,100.36,909.4MiB / 1GiB,88.81,238
+1795409406,jmeter-host,2.7,265MiB,,
+1795409410,prestashop-stress-prestashop-1,157.50,1.577GiB / 2GiB,78.83,151
+1795409410,prestashop-stress-mysql-1,100.48,907MiB / 1GiB,88.58,230
+1795409410,jmeter-host,3.0,305MiB,,
+1795409413,prestashop-stress-prestashop-1,152.92,1.573GiB / 2GiB,78.65,151
+1795409413,prestashop-stress-mysql-1,100.99,909.6MiB / 1GiB,88.83,221
+1795409413,jmeter-host,1.6,272MiB,,
+1795409417,prestashop-stress-prestashop-1,162.89,1.573GiB / 2GiB,78.63,151
+1795409417,prestashop-stress-mysql-1,101.89,911.9MiB / 1GiB,89.05,217
+1795409417,jmeter-host,2.1,241MiB,,
+1795409422,prestashop-stress-prestashop-1,142.52,1.573GiB / 2GiB,78.67,151
+1795409422,prestashop-stress-mysql-1,102.04,916.8MiB / 1GiB,89.53,200
+1795409422,jmeter-host,11.9,317MiB,,
+1795409426,prestashop-stress-prestashop-1,158.17,1.557GiB / 2GiB,77.86,151
+1795409426,prestashop-stress-mysql-1,101.92,918.9MiB / 1GiB,89.74,203
+1795409426,jmeter-host,4.7,375MiB,,
+1795409430,prestashop-stress-prestashop-1,141.64,1.554GiB / 2GiB,77.68,151
+1795409430,prestashop-stress-mysql-1,100.21,921.5MiB / 1GiB,89.99,212
+1795409430,jmeter-host,6.1,514MiB,,
+1795409434,prestashop-stress-prestashop-1,153.46,1.536GiB / 2GiB,76.82,151
+1795409434,prestashop-stress-mysql-1,99.58,923.8MiB / 1GiB,90.22,216
+1795409434,jmeter-host,10.3,315MiB,,
+1795409438,prestashop-stress-prestashop-1,144.72,1.545GiB / 2GiB,77.27,151
+1795409438,prestashop-stress-mysql-1,100.74,929.8MiB / 1GiB,90.80,213
+1795409438,jmeter-host,1.9,296MiB,,
+1795409441,prestashop-stress-prestashop-1,150.04,1.549GiB / 2GiB,77.47,151
+1795409441,prestashop-stress-mysql-1,100.50,930MiB / 1GiB,90.82,199
+1795409441,jmeter-host,2.6,194MiB,,
+1795409444,prestashop-stress-prestashop-1,166.51,1.546GiB / 2GiB,77.29,151
+1795409444,prestashop-stress-mysql-1,99.91,934.4MiB / 1GiB,91.25,200
+1795409444,jmeter-host,1.0,191MiB,,
+1795409448,prestashop-stress-prestashop-1,141.03,1.539GiB / 2GiB,76.96,151
+1795409448,prestashop-stress-mysql-1,100.60,935.5MiB / 1GiB,91.36,189
+1795409448,jmeter-host,4.1,306MiB,,
+1795409451,prestashop-stress-prestashop-1,152.10,1.552GiB / 2GiB,77.61,151
+1795409451,prestashop-stress-mysql-1,100.99,937.7MiB / 1GiB,91.58,213
+1795409451,jmeter-host,0.3,262MiB,,
+1795409455,prestashop-stress-prestashop-1,156.92,1.535GiB / 2GiB,76.76,151
+1795409455,prestashop-stress-mysql-1,102.69,940.2MiB / 1GiB,91.82,225
+1795409455,jmeter-host,2.8,260MiB,,
+1795409459,prestashop-stress-prestashop-1,143.93,1.538GiB / 2GiB,76.88,151
+1795409459,prestashop-stress-mysql-1,101.08,941.6MiB / 1GiB,91.96,193
+1795409459,jmeter-host,5.3,443MiB,,
+1795409463,prestashop-stress-prestashop-1,170.18,1.545GiB / 2GiB,77.24,151
+1795409463,prestashop-stress-mysql-1,100.21,943.9MiB / 1GiB,92.18,184
+1795409463,jmeter-host,2.3,331MiB,,
+1795409468,prestashop-stress-prestashop-1,169.27,1.545GiB / 2GiB,77.25,151
+1795409468,prestashop-stress-mysql-1,100.70,943.9MiB / 1GiB,92.17,206
+1795409468,jmeter-host,3.2,302MiB,,
+1795409471,prestashop-stress-prestashop-1,151.43,1.526GiB / 2GiB,76.31,151
+1795409471,prestashop-stress-mysql-1,100.30,946.9MiB / 1GiB,92.47,211
+1795409471,jmeter-host,2.7,328MiB,,
+1795409474,prestashop-stress-prestashop-1,151.75,1.567GiB / 2GiB,78.36,151
+1795409474,prestashop-stress-mysql-1,100.06,946.8MiB / 1GiB,92.46,224
+1795409474,jmeter-host,3.0,306MiB,,
+1795409478,prestashop-stress-prestashop-1,156.04,1.555GiB / 2GiB,77.74,151
+1795409478,prestashop-stress-mysql-1,99.67,950.1MiB / 1GiB,92.78,206
+1795409478,jmeter-host,0.9,246MiB,,
+1795409481,prestashop-stress-prestashop-1,151.24,1.551GiB / 2GiB,77.57,151
+1795409481,prestashop-stress-mysql-1,101.14,954.6MiB / 1GiB,93.23,195
+1795409481,jmeter-host,1.2,228MiB,,
+1795409484,prestashop-stress-prestashop-1,172.42,1.542GiB / 2GiB,77.09,151
+1795409484,prestashop-stress-mysql-1,102.63,956MiB / 1GiB,93.36,203
+1795409484,jmeter-host,1.3,238MiB,,
+1795409488,prestashop-stress-prestashop-1,130.55,1.542GiB / 2GiB,77.12,151
+1795409488,prestashop-stress-mysql-1,101.80,957.5MiB / 1GiB,93.50,211
+1795409488,jmeter-host,2.2,233MiB,,
+1795409491,prestashop-stress-prestashop-1,151.56,1.543GiB / 2GiB,77.16,151
+1795409491,prestashop-stress-mysql-1,101.10,959.7MiB / 1GiB,93.72,204
+1795409491,jmeter-host,0.9,236MiB,,
+1795409495,prestashop-stress-prestashop-1,158.78,1.553GiB / 2GiB,77.64,151
+1795409495,prestashop-stress-mysql-1,100.35,959.5MiB / 1GiB,93.70,182
+1795409495,jmeter-host,7.8,192MiB,,
+1795409499,prestashop-stress-prestashop-1,150.13,1.541GiB / 2GiB,77.06,151
+1795409499,prestashop-stress-mysql-1,100.20,962.8MiB / 1GiB,94.02,189
+1795409499,jmeter-host,1.6,261MiB,,
+1795409503,prestashop-stress-prestashop-1,161.10,1.555GiB / 2GiB,77.74,151
+1795409503,prestashop-stress-mysql-1,102.87,964.3MiB / 1GiB,94.17,192
+1795409503,jmeter-host,2.7,243MiB,,
+1795409507,prestashop-stress-prestashop-1,168.67,1.528GiB / 2GiB,76.41,151
+1795409507,prestashop-stress-mysql-1,98.57,967.4MiB / 1GiB,94.47,225
+1795409507,jmeter-host,0.8,179MiB,,
+1795409511,prestashop-stress-prestashop-1,155.96,1.536GiB / 2GiB,76.80,151
+1795409511,prestashop-stress-mysql-1,100.76,968.9MiB / 1GiB,94.62,215
+1795409511,jmeter-host,1.9,163MiB,,
+1795409515,prestashop-stress-prestashop-1,157.70,1.569GiB / 2GiB,78.46,151
+1795409515,prestashop-stress-mysql-1,100.34,969.7MiB / 1GiB,94.70,234
+1795409515,jmeter-host,2.5,187MiB,,
+1795409518,prestashop-stress-prestashop-1,164.96,1.593GiB / 2GiB,79.66,151
+1795409518,prestashop-stress-mysql-1,100.26,971.2MiB / 1GiB,94.85,222
+1795409518,jmeter-host,1.9,241MiB,,
+1795409521,prestashop-stress-prestashop-1,141.80,1.582GiB / 2GiB,79.09,151
+1795409521,prestashop-stress-mysql-1,99.57,975MiB / 1GiB,95.21,200
+1795409521,jmeter-host,1.4,225MiB,,
+1795409525,prestashop-stress-prestashop-1,154.45,1.563GiB / 2GiB,78.13,151
+1795409525,prestashop-stress-mysql-1,100.48,976.3MiB / 1GiB,95.34,202
+1795409525,jmeter-host,1.8,234MiB,,
+1795409528,prestashop-stress-prestashop-1,165.97,1.555GiB / 2GiB,77.75,151
+1795409528,prestashop-stress-mysql-1,100.88,978.3MiB / 1GiB,95.54,206
+1795409528,jmeter-host,2.1,191MiB,,
+1795409532,prestashop-stress-prestashop-1,138.06,1.58GiB / 2GiB,79.02,151
+1795409532,prestashop-stress-mysql-1,100.42,981.6MiB / 1GiB,95.85,223
+1795409532,jmeter-host,3.2,198MiB,,
+1795409536,prestashop-stress-prestashop-1,154.01,1.571GiB / 2GiB,78.55,151
+1795409536,prestashop-stress-mysql-1,100.16,983.2MiB / 1GiB,96.02,197
+1795409536,jmeter-host,3.1,217MiB,,
+1795409540,prestashop-stress-prestashop-1,153.29,1.544GiB / 2GiB,77.22,151
+1795409540,prestashop-stress-mysql-1,100.01,984.6MiB / 1GiB,96.15,206
+1795409540,jmeter-host,2.3,179MiB,,
+1795409544,prestashop-stress-prestashop-1,152.51,1.561GiB / 2GiB,78.04,151
+1795409544,prestashop-stress-mysql-1,99.60,985.8MiB / 1GiB,96.27,219
+1795409544,jmeter-host,1.4,148MiB,,
+1795409548,prestashop-stress-prestashop-1,183.80,1.568GiB / 2GiB,78.42,151
+1795409548,prestashop-stress-mysql-1,100.89,987.6MiB / 1GiB,96.44,237
+1795409548,jmeter-host,4.1,176MiB,,
+1795409552,prestashop-stress-prestashop-1,160.28,1.577GiB / 2GiB,78.87,151
+1795409552,prestashop-stress-mysql-1,100.09,987.6MiB / 1GiB,96.45,213
+1795409552,jmeter-host,1.6,146MiB,,
+1795409556,prestashop-stress-prestashop-1,136.59,1.559GiB / 2GiB,77.97,151
+1795409556,prestashop-stress-mysql-1,101.07,992.1MiB / 1GiB,96.89,221
+1795409556,jmeter-host,1.7,204MiB,,
+1795409560,prestashop-stress-prestashop-1,158.09,1.583GiB / 2GiB,79.16,151
+1795409560,prestashop-stress-mysql-1,101.73,991MiB / 1GiB,96.78,217
+1795409560,jmeter-host,1.7,160MiB,,
+1795409564,prestashop-stress-prestashop-1,136.96,1.574GiB / 2GiB,78.69,151
+1795409564,prestashop-stress-mysql-1,100.22,995.5MiB / 1GiB,97.22,199
+1795409564,jmeter-host,1.0,138MiB,,
+1795409567,prestashop-stress-prestashop-1,149.10,1.538GiB / 2GiB,76.91,151
+1795409567,prestashop-stress-mysql-1,100.68,995.6MiB / 1GiB,97.23,196
+1795409567,jmeter-host,1.7,155MiB,,
+1795409571,prestashop-stress-prestashop-1,177.55,1.572GiB / 2GiB,78.60,151
+1795409571,prestashop-stress-mysql-1,100.55,1000MiB / 1GiB,97.65,226
+1795409571,jmeter-host,2.8,119MiB,,
+1795409575,prestashop-stress-prestashop-1,173.72,1.563GiB / 2GiB,78.14,151
+1795409575,prestashop-stress-mysql-1,101.05,999.2MiB / 1GiB,97.58,225
+1795409575,jmeter-host,1.3,158MiB,,
+1795409579,prestashop-stress-prestashop-1,143.73,1.532GiB / 2GiB,76.61,151
+1795409579,prestashop-stress-mysql-1,100.18,1001MiB / 1GiB,97.71,213
+1795409579,jmeter-host,2.3,178MiB,,
+1795409583,prestashop-stress-prestashop-1,178.96,1.554GiB / 2GiB,77.69,151
+1795409583,prestashop-stress-mysql-1,100.93,1004MiB / 1GiB,98.00,209
+1795409583,jmeter-host,1.4,137MiB,,
+1795409586,prestashop-stress-prestashop-1,142.82,1.57GiB / 2GiB,78.50,151
+1795409586,prestashop-stress-mysql-1,101.00,1001MiB / 1GiB,97.78,211
+1795409586,jmeter-host,0.7,133MiB,,
+1795409590,prestashop-stress-prestashop-1,176.37,1.558GiB / 2GiB,77.90,151
+1795409590,prestashop-stress-mysql-1,109.81,1006MiB / 1GiB,98.24,229
+1795409590,jmeter-host,1.8,69MiB,,
+1795409593,prestashop-stress-prestashop-1,169.93,1.572GiB / 2GiB,78.62,151
+1795409593,prestashop-stress-mysql-1,99.84,1004MiB / 1GiB,98.01,227
+1795409593,jmeter-host,0.0,181MiB,,
+1795409596,prestashop-stress-prestashop-1,150.02,1.583GiB / 2GiB,79.15,151
+1795409596,prestashop-stress-mysql-1,101.00,1004MiB / 1GiB,98.02,203
+1795409596,jmeter-host,0.0,310MiB,,
+1795409600,prestashop-stress-prestashop-1,174.91,1.566GiB / 2GiB,78.29,151
+1795409600,prestashop-stress-mysql-1,100.33,1005MiB / 1GiB,98.10,185
+1795409600,jmeter-host,0.0,469MiB,,

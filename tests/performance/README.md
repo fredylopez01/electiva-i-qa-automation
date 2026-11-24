@@ -32,6 +32,8 @@ jmeter -n -t load/plans/<plan>.jmx -l load/reports/results.jtl -e -o load/report
 
 Los planes de carga concretos (10, 20 y 50 usuarios) se documentan en `load/README.md`.
 
+Las 2 pruebas de estrés (rampa incremental y pico súbito) se documentan en [`stress/README.md`](stress/README.md); se ejecutan contra un PrestaShop local en Docker (ver ADR-003 en `docs/decisiones.md`).
+
 ## Resultados y evidencias
 
 - Reportes: `results/performance/`
