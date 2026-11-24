@@ -36,15 +36,25 @@ const formIn = ($body, selectors) => {
   return $form.length ? $form : $body;
 };
 
-/** Visita la tienda y reintenta si el demo responde un 502 de Cloudflare. */
+const isShopUnavailable = ($body) =>
+  $body.find("#cf-wrapper").length > 0 ||
+  /sorry, we could not load|502\s*[-–]?\s*bad gateway/i.test($body.text());
+
+/** Visita la tienda y reintenta respuestas 502 o fallos de red transitorios. */
 const visitShop = (url, attempt = 0) => {
-  cy.visit(url, { timeout: 120000, failOnStatusCode: false });
+  cy.visit(url, {
+    timeout: 120000,
+    failOnStatusCode: false,
+    retryOnNetworkFailure: true,
+    retryAttempts: 2,
+  });
   cy.get("body").then(($body) => {
-    if ($body.find("#cf-wrapper").length && attempt < 2) {
+    const unavailable = isShopUnavailable($body);
+    if (unavailable && attempt < 2) {
       cy.wait(3000);
       visitShop(url, attempt + 1);
     } else {
-      expect($body.find("#cf-wrapper").length, "demo disponible (no 502)").to.eq(0);
+      expect(unavailable, "tienda demo disponible (sin 502)").to.eq(false);
     }
   });
 };
@@ -103,9 +113,11 @@ const goToLinkByText = (text) => {
       .first();
     expect($link.length, `link de ${text}`).to.be.greaterThan(0);
     const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
-    cy.visit(new URL($link.attr("href"), base).href);
+    visitShop(new URL($link.attr("href"), base).href);
   });
 };
+
+Cypress.Commands.add("visitShop", (url) => visitShop(url));
 
 Cypress.Commands.add("goToCategory", (category, subcategory) => {
   goToLinkByText(category);
@@ -179,7 +191,7 @@ Cypress.Commands.add("addProductToCart", (index = 0) => {
         cy.get(".modal-backdrop").should("not.exist");
       } else {
         // El producto se agregó pero la tienda redirigió al carrito; volver al listado.
-        cy.visit(listingUrl);
+        visitShop(listingUrl);
         cy.get(PRODUCT_CARD).should("have.length.greaterThan", index);
       }
     });
@@ -200,9 +212,10 @@ Cypress.Commands.add("openSignIn", () => {
   cy.get("body").then(($body) => {
     const $link = $body.find(SIGN_IN_CONTROL).first();
     const href = $link.attr("href");
-    const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
     if (href && href !== "#" && !href.startsWith("javascript")) {
-      cy.visit(new URL(href, base).href);
+      // Sigue la navegación del enlace en el navegador; cy.visit() hace la
+      // petición desde Node y el demo temporal puede agotarla intermitentemente.
+      cy.wrap($link).click({ force: true });
     } else if ($link.length) {
       cy.wrap($link).click({ force: true });
     } else {
@@ -216,7 +229,7 @@ Cypress.Commands.add("openSignIn", () => {
   cy.get("body").then(($body) => {
     if ($body.find(EMAIL).length === 0) {
       const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
-      cy.visit(new URL("/login", base).href, { failOnStatusCode: false });
+      visitShop(new URL("/login", base).href);
     }
   });
 
@@ -295,23 +308,36 @@ Cypress.Commands.add("loginWithInvalidPassword", (email, password) => {
 });
 
 Cypress.Commands.add("logout", () => {
-  cy.get("body").then(($body) => {
-    const $signOut = $body
-      .find('a[href*="mylogout"], a[data-link-action="sign-out"], a[href*="logout"]')
-      .first();
-
-    // En PrestaShop 8 el enlace vive dentro de un dropdown Bootstrap.
-    if (!$signOut.length || !$signOut.is(":visible")) {
-      const $menu = $body
-        .find(
-          '#userMenuButton, button[data-bs-toggle="dropdown"][aria-label*="account"]',
-        )
+  const openSignOut = () =>
+    cy.get("body").then(($body) => {
+      const $signOut = $body
+        .find('a[href*="mylogout"], a[data-link-action="sign-out"], a[href*="logout"]')
         .first();
-      if ($menu.length) {
-        cy.wrap($menu).click();
+
+      // En PrestaShop 8 el enlace vive dentro de un dropdown Bootstrap.
+      if (!$signOut.length || !$signOut.is(":visible")) {
+        const $menu = $body
+          .find(
+            '#userMenuButton, button[data-bs-toggle="dropdown"][aria-label*="account"]',
+          )
+          .first();
+        if ($menu.length) {
+          cy.wrap($menu).click();
+        }
       }
-    }
-  });
+    });
+
+  const recoverIfUnavailable = () =>
+    cy.get("body").then(($body) => {
+      if (isShopUnavailable($body)) {
+        visitShop(Cypress.env("shopUrl"));
+      }
+    });
+
+  recoverIfUnavailable();
+  openSignOut();
+  recoverIfUnavailable();
+  openSignOut();
 
   cy.contains("a", /sign out|logout/i)
     .first()
@@ -320,11 +346,7 @@ Cypress.Commands.add("logout", () => {
 
   // El redirect del logout a veces cae en un 502 de Cloudflare; volvemos a
   // entrar a la misma tienda para seguir con la sesión ya cerrada.
-  cy.get("body").then(($body) => {
-    if ($body.find("#cf-wrapper").length) {
-      visitShop(Cypress.env("shopUrl"));
-    }
-  });
+  recoverIfUnavailable();
 
   // Tras el logout el dropdown del usuario debe desaparecer.
   cy.get("body").should(($body) => {
@@ -344,7 +366,7 @@ Cypress.Commands.add("openCart", () => {
     expect($link.length, "cart link").to.be.greaterThan(0);
     const href = $link.attr("href");
     const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
-    cy.visit(new URL(href, base).href);
+    visitShop(new URL(href, base).href);
   });
 });
 
@@ -366,7 +388,7 @@ Cypress.Commands.add("goToCheckout", () => {
     .should("not.be.disabled")
     .click();
 
-  cy.get("#checkout-personal-information-step, .checkout-step").should("be.visible");
+  cy.get(".js-current-step, .step--current, .checkout-step.-current").should("be.visible");
 
   // Si el usuario ya está autenticado, el paso de información personal puede
   // mostrar solo un botón "Continue"; hay que avanzarlo para llegar a direcciones.
@@ -374,9 +396,15 @@ Cypress.Commands.add("goToCheckout", () => {
     const $personal = $body.find("#checkout-personal-information-step");
     if (!$personal.length) return;
 
+    const $address = $body.find("#checkout-addresses-step, #checkout-address-step");
+    const addressReady =
+      $address.length &&
+      ($address.is(":visible") || $address.hasClass("step--current") || $address.hasClass("js-current-step"));
+    if (addressReady) return;
+
     const loggedIn =
       $personal.find('a[href*="logout"], a[data-link-action="sign-out"]').length > 0 ||
-      /continue/i.test($personal.text()) && $personal.find("form #login-form, form input[name=password]").length === 0;
+      (/continue/i.test($personal.text()) && $personal.find("form #login-form, form input[name=password]").length === 0);
 
     if (loggedIn) {
       const $continue = $personal

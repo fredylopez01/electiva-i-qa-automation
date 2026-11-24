@@ -50,9 +50,16 @@ npm run cy:open              # modo interactivo
 npm run cy:run               # todas las pruebas en modo headless
 npm run cy:run:checkout      # solo happy path
 npm run cy:run:negative      # solo pruebas negativas
+npm run cy:run:toolshop      # happy path alternativo en Practice Software Testing
 ```
 
 La URL se puede sobrescribir con `CYPRESS_baseUrl=https://demo.prestashop.com/`.
+
+### Happy path alternativo — Practice Software Testing
+
+La prueba independiente `cypress/e2e/toolshop/checkout-happy-path.cy.js` cubre
+registro, inicio de sesión, dos productos distintos y checkout con pago de
+prueba "Cash on Delivery". No reemplaza ni modifica la suite de PrestaShop.
 
 ## Notas técnicas
 

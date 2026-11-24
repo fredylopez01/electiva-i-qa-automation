@@ -31,7 +31,7 @@ describe(
     })
 
     it('3. adicionar producto 1', () => {
-      cy.visit(Cypress.env('shopUrl'))
+      cy.visitShop(Cypress.env('shopUrl'))
       cy.get('.product-miniature').should('have.length.greaterThan', 1)
       cy.addProductToCart(0)
     })
