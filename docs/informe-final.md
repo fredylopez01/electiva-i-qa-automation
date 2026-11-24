@@ -55,14 +55,15 @@
 
 - Resultados por nivel de concurrencia (tiempo de respuesta, throughput, errores):
 
-  | Usuarios | Ramp-up | Promedio (ms) | P95 (ms) | Throughput | Error % | Estado |
-  | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-  | 10 | 10 s | _pendiente_ | _pendiente_ | _pendiente_ | _pendiente_ | Pendiente de ejecución |
-  | 20 | 20 s | _pendiente_ | _pendiente_ | _pendiente_ | _pendiente_ | Pendiente de ejecución |
-  | 50 | 50 s | _pendiente_ | _pendiente_ | _pendiente_ | _pendiente_ | Pendiente de ejecución |
+  | Usuarios | Ramp-up | Promedio (ms) | P95 (ms) | Mín (ms) | Máx (ms) | Throughput (req/s) | Error % | Duración (s) |
+  | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+  | 10 | 10 s | 829.00 | 1141.75 | 679 | 1144 | 0.99 | 0.00% | 10.14 |
+  | 20 | 20 s | 762.70 | 1131.25 | 680 | 1155 | 1.01 | 0.00% | 19.73 |
+  | 50 | 50 s | 726.54 | 1124.10 | 671 | 1217 | 1.01 | 0.00% | 49.66 |
 
-- Reporte: `results/performance/load-10/`, `results/performance/load-20/`, `results/performance/load-50/`
-- Informe de las 3 pruebas: consolidar los `Summary Report`/HTML de JMeter tras la ejecución y actualizar esta tabla. Las evidencias deben copiarse a `evidences/performance/`.
+- Reporte: `results/performance/load-report.html` (resumen consolidado generado desde los JTL).
+- Archivos JTL: `results/performance/load-10-users.jtl`, `results/performance/load-20-users.jtl`, `results/performance/load-50-users.jtl`.
+- Informe de las 3 pruebas: las tres ejecuciones completaron sin errores. El throughput se mantuvo ~1 req/s, coherente con 1 iteración por usuario y ramp-up igual a la concurrencia. El P95 se mantuvo estable (~1124–1142 ms) al aumentar de 10 a 50 usuarios; no se observaron fallos HTTP en estas muestras. Nota: Toolshop es SPA, por lo que JMeter midió la respuesta HTTP inicial, no el render completo del navegador.
 
 ### 4.2 Pruebas de estrés (2 pruebas, recursos máximos)
 

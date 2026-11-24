@@ -9,11 +9,11 @@ Tres pruebas de carga con **10, 20 y 50 usuarios concurrentes**, según el requi
 
 ## Planes
 
-| Plan | Usuarios | Ramp-up | Reporte |
-| --- | --- | --- | --- |
-| `plans/load-10-users.jmx` | 10 | 10 s | `results/performance/load-10/` |
-| `plans/load-20-users.jmx` | 20 | 20 s | `results/performance/load-20/` |
-| `plans/load-50-users.jmx` | 50 | 50 s | `results/performance/load-50/` |
+| Plan | Usuarios | Ramp-up | JTL | Reporte HTML |
+| --- | --- | --- | --- | --- |
+| `plans/load-10-users.jmx` | 10 | 10 s | `results/performance/load-10-users.jtl` | `results/performance/load-report.html` |
+| `plans/load-20-users.jmx` | 20 | 20 s | `results/performance/load-20-users.jtl` | `results/performance/load-report.html` |
+| `plans/load-50-users.jmx` | 50 | 50 s | `results/performance/load-50-users.jtl` | `results/performance/load-report.html` |
 
 Cada plan hace una petición `GET https://practicesoftwaretesting.com/` con un `HTTP Cookie Manager`, un `Header Manager` y un `Summary Report`.
 
