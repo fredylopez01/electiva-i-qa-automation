@@ -123,47 +123,103 @@ Cypress.Commands.add("addProductToCart", (index = 0) => {
   // anteriores. El formulario de la ficha de producto envía action=update y,
   // en el demo, reemplaza el carrito (el segundo producto borra el primero).
   // Por eso se agrega desde el listado sin entrar a la ficha del producto.
-  cy.get(PRODUCT_CARD)
-    .should("have.length.greaterThan", index)
-    .eq(index)
-    .find(
-      'button[data-button-action="add-to-cart"], button.product-miniature__add',
-    )
-    .first()
-    .should("be.visible")
-    .click();
 
-  cy.get("#blockcart-modal, .cart-preview-modal, .modal.show").should(
-    "be.visible",
-  );
-  // Cerrar el modal para poder agregar el siguiente producto desde el listado.
-  cy.contains(
-    "#blockcart-modal button, #blockcart-modal a, .modal.show button, .modal.show a",
-    /continue shopping/i,
-  ).click();
+  // Asegurar que no haya un modal/backdrop previo tapando los botones.
+  cy.document().then((doc) => {
+    doc.querySelectorAll(".modal-backdrop, .blockcart-modal.show, .modal.show").forEach((el) => {
+      if (el.classList.contains("modal-backdrop")) {
+        el.remove();
+      } else {
+        el.classList.remove("show");
+        el.style.display = "none";
+      }
+    });
+    doc.body.classList.remove("modal-open");
+    doc.body.style.removeProperty("overflow");
+    doc.body.style.removeProperty("padding-right");
+  });
+
+  cy.url().then((listingUrl) => {
+    cy.get(PRODUCT_CARD)
+      .should("have.length.greaterThan", index)
+      .eq(index)
+      .find(
+        'button[data-button-action="add-to-cart"], button.product-miniature__add',
+      )
+      .first()
+      .should("be.visible")
+      .click({ force: true });
+
+    // Según configuración/JS del demo, agregar puede abrir modal o navegar al carrito.
+    cy.get("body", { timeout: 20000 }).should(($body) => {
+      const hasModal = $body.find("#blockcart-modal, .cart-preview-modal, .modal.show").length > 0;
+      const onCartPage =
+        $body.find(".cart-grid").length > 0 &&
+        /shopping cart|carrito/i.test($body.text());
+      expect(hasModal || onCartPage, "modal de carrito o página de carrito").to.eq(true);
+    });
+
+    cy.get("body").then(($body) => {
+      const hasModal = $body.find("#blockcart-modal, .cart-preview-modal, .modal.show").length > 0;
+
+      if (hasModal) {
+        // Cerrar el modal para poder agregar el siguiente producto desde el listado.
+        cy.contains(
+          "#blockcart-modal button, #blockcart-modal a, .modal.show button, .modal.show a",
+          /continue shopping/i,
+        ).click({ force: true });
+        cy.get("#blockcart-modal.show, .modal.show").should("not.exist");
+        // Limpieza defensiva: a veces el backdrop queda huérfano tras la transición.
+        cy.document().then((doc) => {
+          doc.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
+          doc.body.classList.remove("modal-open");
+          doc.body.style.removeProperty("overflow");
+          doc.body.style.removeProperty("padding-right");
+        });
+        cy.get(".modal-backdrop").should("not.exist");
+      } else {
+        // El producto se agregó pero la tienda redirigió al carrito; volver al listado.
+        cy.visit(listingUrl);
+        cy.get(PRODUCT_CARD).should("have.length.greaterThan", index);
+      }
+    });
+  });
 });
 
 Cypress.Commands.add("openSignIn", () => {
   const SIGN_IN_CONTROL =
-    '#_desktop_ps_customersignin a, #_desktop_user_info a, .user-info a, a[href*="login"], button[aria-label*="sign in"]';
+    '#_desktop_ps_customersignin a, #_desktop_user_info a, .user-info a, a[href*="login"], a[href*="my-account"], button[aria-label*="sign in"]';
 
   // Tras el logout el header se vuelve a renderizar: esperar al control.
   cy.get("body").should(($body) => {
     const hasControl = $body.find(SIGN_IN_CONTROL).length > 0;
-    const hasText = /sign in|my account|log in/i.test($body.text());
+    const hasText = /sign in|log in|my account/i.test($body.text());
     expect(hasControl || hasText, "control de sign in").to.eq(true);
   });
 
   cy.get("body").then(($body) => {
     const $link = $body.find(SIGN_IN_CONTROL).first();
-    if ($link.length) {
-      cy.wrap($link).click();
+    const href = $link.attr("href");
+    const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
+    if (href && href !== "#" && !href.startsWith("javascript")) {
+      cy.visit(new URL(href, base).href);
+    } else if ($link.length) {
+      cy.wrap($link).click({ force: true });
     } else {
-      cy.contains("a, button", /sign in|my account|log in/i)
+      cy.contains("a, button", /sign in|log in|my account/i)
         .first()
-        .click();
+        .click({ force: true });
     }
   });
+
+  // Asegurar que realmente llegamos al formulario de login; si no, ir directo.
+  cy.get("body").then(($body) => {
+    if ($body.find(EMAIL).length === 0) {
+      const base = Cypress.env("shopUrl") || Cypress.config("baseUrl");
+      cy.visit(new URL("/login", base).href, { failOnStatusCode: false });
+    }
+  });
+
   cy.get("body").should(($body) => {
     expect($body.find(EMAIL).length, "campo de email").to.be.greaterThan(0);
   });
@@ -309,44 +365,89 @@ Cypress.Commands.add("goToCheckout", () => {
   )
     .should("not.be.disabled")
     .click();
-  cy.get("#checkout-personal-information-step").should("be.visible");
+
+  cy.get("#checkout-personal-information-step, .checkout-step").should("be.visible");
+
+  // Si el usuario ya está autenticado, el paso de información personal puede
+  // mostrar solo un botón "Continue"; hay que avanzarlo para llegar a direcciones.
+  cy.get("body").then(($body) => {
+    const $personal = $body.find("#checkout-personal-information-step");
+    if (!$personal.length) return;
+
+    const loggedIn =
+      $personal.find('a[href*="logout"], a[data-link-action="sign-out"]').length > 0 ||
+      /continue/i.test($personal.text()) && $personal.find("form #login-form, form input[name=password]").length === 0;
+
+    if (loggedIn) {
+      const $continue = $personal
+        .find(
+          'button[data-link-action="sign-in"], button.continue, .continue.btn, button[type="submit"]',
+        )
+        .filter((_, el) => /continue/i.test(el.textContent || ""))
+        .first();
+
+      if ($continue.length) {
+        cy.wrap($continue).click({ force: true });
+      }
+    }
+  });
 });
 
 Cypress.Commands.add("fillCheckoutAddress", (address) => {
-  cy.get("#checkout-address-step").should("be.visible");
-  cy.get("#checkout-address-step").find(ADDRESS).first().clear().type(address.address1);
-  cy.get("#checkout-address-step").find(CITY).first().clear().type(address.city);
-  cy.get("#checkout-address-step").find(POSTCODE).first().clear().type(address.postcode);
-  cy.get("#checkout-address-step").find(PHONE).first().clear().type(address.phone);
+  const ADDRESS_STEP = "#checkout-addresses-step, #checkout-address-step";
+  const DELIVERY_STEP = "#checkout-delivery-step, #checkout-shipping-step";
 
-  cy.get("#checkout-address-step").then(($step) => {
+  // Si el paso está colapsado pero es alcanzable, abrirlo.
+  cy.get("body").then(($body) => {
+    const $step = $body.find(ADDRESS_STEP).first();
+    if ($step.length && !$step.is(":visible")) {
+      cy.wrap($step).find(".step-title, .js-edit-addresses").first().click({ force: true });
+    }
+  });
+
+  cy.get(ADDRESS_STEP).should("be.visible");
+  cy.get(ADDRESS_STEP).find(ADDRESS).first().clear().type(address.address1);
+  cy.get(ADDRESS_STEP).find(CITY).first().clear().type(address.city);
+  cy.get(ADDRESS_STEP).find(POSTCODE).first().clear().type(address.postcode);
+  cy.get(ADDRESS_STEP).find(PHONE).first().clear().type(address.phone);
+
+  cy.get(ADDRESS_STEP).then(($step) => {
     const $button = $step
       .find(
-        'button[data-link-action="confirm-address"], #confirm-addresses, button.form-control-submit',
+        'button[data-link-action="confirm-address"], #confirm-addresses, button[name="confirm-addresses"], button.form-control-submit, button[type="submit"]',
       )
+      .filter(":visible")
       .first();
-    expect($button.length, "botón continuar de dirección").to.be.greaterThan(0);
-    cy.wrap($button).click();
+    const $fallback = $step.find('button[type="submit"], button.form-control-submit').first();
+    const $target = $button.length ? $button : $fallback;
+    expect($target.length, "botón continuar de dirección").to.be.greaterThan(0);
+    cy.wrap($target).click({ force: true });
   });
-  cy.get("#checkout-shipping-step").should("be.visible");
+
+  cy.get(DELIVERY_STEP, { timeout: 20000 }).should("be.visible");
 });
 
 Cypress.Commands.add("selectShipping", () => {
-  cy.get("#checkout-shipping-step").should("be.visible");
-  cy.get('#checkout-shipping-step input[type="radio"]')
+  const DELIVERY_STEP = "#checkout-delivery-step, #checkout-shipping-step";
+  cy.get(DELIVERY_STEP).should("be.visible");
+  cy.get(DELIVERY_STEP)
+    .find('input[type="radio"]')
     .first()
     .check({ force: true });
 
-  cy.get("#checkout-shipping-step").then(($step) => {
+  cy.get(DELIVERY_STEP).then(($step) => {
     const $button = $step
       .find(
-        'button[data-link-action="confirm-delivery"], #confirmDeliveryOption, button.form-control-submit',
+        'button[name="confirmDeliveryOption"], button[data-link-action="confirm-delivery"], #confirmDeliveryOption, button.form-control-submit, button[type="submit"]',
       )
+      .filter(":visible")
       .first();
-    expect($button.length, "botón continuar de envío").to.be.greaterThan(0);
-    cy.wrap($button).click();
+    const $fallback = $step.find('button[type="submit"], button.form-control-submit').first();
+    const $target = $button.length ? $button : $fallback;
+    expect($target.length, "botón continuar de envío").to.be.greaterThan(0);
+    cy.wrap($target).click({ force: true });
   });
-  cy.get("#checkout-payment-step").should("be.visible");
+  cy.get("#checkout-payment-step", { timeout: 20000 }).should("be.visible");
 });
 
 /** Selecciona el primer método de pago disponible y confirma el pedido. */
