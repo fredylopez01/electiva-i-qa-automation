@@ -1,0 +1,6 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","3628","3. agrega el primer producto al carrito","Etapa 2 — Checkout happy path en móvil (PrestaShop PWA)","2026-11-24","passed","2026-11-24","","","",""
+"","3751","2. inicia sesión con las credenciales correctas","Etapa 2 — Checkout happy path en móvil (PrestaShop PWA)","2026-11-24","passed","2026-11-24","","","",""
+"","10007","1. crea una cuenta de usuario nueva","Etapa 2 — Checkout happy path en móvil (PrestaShop PWA)","2026-11-24","passed","2026-11-24","","","",""
+"","15783","5. completa el checkout con envío y pago","Etapa 2 — Checkout happy path en móvil (PrestaShop PWA)","2026-11-24","passed","2026-11-24","","","",""
+"","3305","4. agrega un segundo producto diferente al carrito","Etapa 2 — Checkout happy path en móvil (PrestaShop PWA)","2026-11-24","passed","2026-11-24","","","",""

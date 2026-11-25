@@ -1,0 +1,23 @@
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider (file:/C:/Users/nico1/qa-tools/apache-jmeter-5.6.3/lib/xstream-1.4.20.jar)
+WARNING: Please consider reporting this to the maintainers of class com.thoughtworks.xstream.converters.reflection.SunUnsafeReflectionProvider
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Creating summariser <summary>
+Created the tree successfully using C:\Users\nico1\OneDrive\Documentos\electiva pruebas\reto final\electiva-i-qa-automation\tests\performance\endurance\plans\endurance-01-dos-horas.jmx
+Starting standalone test @ 2026 Nov 23 22:22:00 GMT-05:00 (1795490520284)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+summary +      1 in 00:00:01 =    1.0/s Avg:   159 Min:   159 Max:   159 Err:     0 (0.00%) Active: 1 Started: 1 Finished: 0
+summary +     44 in 00:00:29 =    1.5/s Avg:   167 Min:    83 Max:   285 Err:     0 (0.00%) Active: 2 Started: 2 Finished: 0
+summary =     45 in 00:00:30 =    1.5/s Avg:   167 Min:    83 Max:   285 Err:     0 (0.00%)
+summary +     89 in 00:00:30 =    3.0/s Avg:   144 Min:    84 Max:   301 Err:     0 (0.00%) Active: 3 Started: 3 Finished: 0
+summary =    134 in 00:01:00 =    2.2/s Avg:   152 Min:    83 Max:   301 Err:     0 (0.00%)
+summary +    135 in 00:00:30 =    4.5/s Avg:   136 Min:    62 Max:   312 Err:     0 (0.00%) Active: 4 Started: 4 Finished: 0
+summary =    269 in 00:01:30 =    3.0/s Avg:   144 Min:    62 Max:   312 Err:     0 (0.00%)
+summary +      3 in 00:00:06 =    0.5/s Avg:   115 Min:   111 Max:   120 Err:     0 (0.00%) Active: 0 Started: 5 Finished: 5
+summary =    272 in 00:01:36 =    2.8/s Avg:   144 Min:    62 Max:   312 Err:     0 (0.00%)
+Tidying up ...    @ 2026 Nov 23 22:23:36 GMT-05:00 (1795490616468)
+... end of run
