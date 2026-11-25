@@ -260,12 +260,12 @@ Para confirmar los números se repitió la prueba 02 con el mismo plan (*corrida
 
 Estado real del repositorio al cierre de esta entrega:
 
-- [ ] **Etapa 1 — Cypress:** las carpetas `tests/e2e-web/cypress/e2e/` están vacías (solo `.gitkeep`); la suite E2E aún no está en `main`.
+- [x] **Etapa 1 — Cypress:** happy path de 5 pasos y 3 pruebas negativas (credenciales inválidas, carrito vacío, tarjeta inválida), más una suite adicional de 8 casos sobre Practice Software Testing. Ver [`results/e2e-web/`](../results/e2e-web/) y [`tests/e2e-web/README.md`](../tests/e2e-web/README.md).
 - [x] **Etapa 2 — Appium:** happy path de checkout completo en emulador, **5 de 5 pasos pasan**, con orden registrada en PrestaShop.
 - [x] **Etapa 3 — Postman/Newman:** 34 requests y 256 aserciones, con reporte HTML y JUnit.
+- [x] **Etapa 4 — Carga:** 10, 20 y 50 usuarios concurrentes; las tres corridas sin errores, p95 estable (~1,1 s). Ver [`results/performance/load-summary.md`](../results/performance/load-summary.md).
 - [x] **Etapa 4 — Estrés:** 2 pruebas con resultados, dashboards y videos.
 - [x] **Etapa 4 — Desempeño (2 h):** ejecutada y documentada en la sección 4.3.
-- [ ] **Etapa 4 — Carga (10/20/50 usuarios):** `tests/performance/load/plans/` está vacía; falta la suite del Integrante 1.
-- [x] Reportes y evidencias de las etapas 2, 3 y de estrés y desempeño en `results/` y `evidences/`.
-- [ ] Demo o video breve de la ejecución.
+- [x] Reportes y evidencias de las 4 etapas en `results/` y `evidences/`.
+- [ ] Demo o video breve de la ejecución para la sustentación.
 - [ ] Completar los datos de equipo, integrantes y fecha en «Datos generales».
