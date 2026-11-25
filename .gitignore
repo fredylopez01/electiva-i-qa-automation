@@ -20,6 +20,8 @@ __pycache__/
 !**/videos/.gitkeep
 **/drivers/*
 !**/drivers/.gitkeep
+# Resultados crudos de Allure: se versiona el reporte HTML, no los JSON intermedios
+**/allure-results/*
 
 # Sistemas operativos y editores
 .DS_Store

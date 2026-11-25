@@ -22,12 +22,38 @@
 
 ## 2. Etapa 2 — Pruebas móviles (Appium)
 
-- Herramienta, emulador y versión:
-- Happy path de checkout ejecutado:
-- Resultados (ejecutadas / pasadas / fallidas):
-- Reporte: `results/mobile/`
-- Evidencias: `evidences/mobile/`
-- Hallazgos:
+> Responsable: Integrante 3. Detalle técnico y comandos en [`tests/mobile/README.md`](../tests/mobile/README.md).
+
+- **Herramientas y versiones:** Appium 3.9.1 con driver `uiautomator2` 8.7.3, WebdriverIO 9.32, Chrome para Android 113 sobre un AVD del SDK de Android (Pixel 6, API 34), chromedriver 113.0.5672.63. Ver [ADR-004](./decisiones.md#adr-004--emulador-y-enfoque-de-la-etapa-2) para la elección de emulador.
+- **Sistema bajo prueba:** PrestaShop 8.2 local del ADR-003, alcanzado desde el emulador con un túnel `adb reverse` (ver [ADR-005](./decisiones.md#adr-005--entorno-de-las-pruebas-móviles-y-de-desempeño-integrante-3)).
+- **Happy path de checkout ejecutado:** los cinco pasos del enunciado en `tests/mobile/tests/checkout/checkout-happy-path.e2e.js`:
+
+| # | Paso | Estado |
+| --- | --- | --- |
+| 1 | Crear una cuenta de usuario nueva | ✅ Pasa |
+| 2 | Login con credenciales correctas | ✅ Pasa |
+| 3 | Agregar el primer producto al carrito | ✅ Pasa |
+| 4 | Agregar un segundo producto diferente al carrito | ✅ Pasa |
+| 5 | Checkout: dirección, método de envío y pago | ✅ Pasa |
+
+- **Resultados (ejecutadas / pasadas / fallidas):** **5 casos / 5 pasan / 0 fallan**. La orden quedó registrada en PrestaShop (`ps_orders`, referencia `PNNABDGWJ`, pago «Payments by check»), lo que confirma el checkout completo de extremo a extremo sobre el dispositivo.
+- **Reporte:** [`results/mobile/`](../results/mobile/) (Allure) — `tests/mobile/reports/allure-results/` con captura automática de cada fallo.
+- **Evidencias:** [`evidences/mobile/`](../evidences/mobile/), `tests/mobile/reports/appium.log` y `tests/mobile/reports/screenshots/`.
+- **Hallazgos técnicos (cada uno costó una corrección en el código):**
+  1. **Dentro del emulador, `localhost` es el propio Android.** La tienda del host se publica con `adb reverse tcp:8090 tcp:8090`; ni `10.0.2.2` ni la IP de la LAN funcionaron por el firewall de Windows. Es el paso que documenta `tests/run-nightly.js`.
+  2. **WDIO 9 usa BiDi por defecto y el driver `uiautomator2` no implementa `browsingContext.navigate`.** Se fuerza el protocolo clásico con `wdio:enforceWebDriverClassic`.
+  3. **El shim `.cmd` de Appium rompe con rutas que contienen espacios** (el repositorio vive en `electiva pruebas`). Se lanza con `node <main.js>` desde `scripts/with-appium.js`.
+  4. **Appium resuelve drivers por directorio de instalación (`APPIUM_HOME`).** Hay que instalar `appium-uiautomator2-driver` junto al `package.json` del proyecto, no solo en el Appium global.
+  5. **El AVD de API 34 trae Chrome 113**, versión que Appium ya no descarga solo; se versiona el chromedriver en `tests/mobile/drivers/`.
+  6. **El `appPackage` y el `browserName` son mutuamente excluyentes** en las capabilities.
+  7. **En el viewport móvil, el click por coordenadas falla** en botones bajo el pliegue o tapados por el resumen de la orden. Los page objects usan el click nativo del navegador (`el.click()` por ejecución de script), que sí dispara los handlers de PrestaShop.
+  8. **PrestaShop intercepta el submit de "Agregar al carrito" con AJAX** (`add=1`): un `form.submit()` nativo **no agrega nada**. Hay que pulsar el botón para que corra su handler.
+  9. **El nombre del transportista es dinámico:** `delivery_option[<id_address>]`, no `delivery_option`. Un selector con el nombre exacto nunca encuentra el radio.
+  10. **Registro y checkout son dos pasos distintos:** primero se guarda la dirección (POST) y solo después aparece "Continuar"; enviar el formulario y pulsar Continuar en el mismo paso deja el carrito con `id_address_delivery = 0`.
+  11. **La tienda de prueba exige el formato de código postal del país** (`NNNNN` para Estados Unidos). Un código postal colombiano es rechazado con "Invalid postcode".
+  12. **Los módulos de pago se filtran por país en SQL, y la ausencia de filas los excluye.** `Module::getHookModuleExecList()` hace `LEFT JOIN module_country ... AND mc.id_country = <país>` con país de facturación: si el módulo **no tiene ninguna fila** en `ps_module_country`, no pasa el filtro. Al retirar la restricción con un `DELETE` dejé `ps_checkpayment` y `ps_wirepayment` sin filas, y el checkout respondió *"there is no payment method available"* durante varias corridas. La corrección real es **añadir las filas de los países donde el módulo debe operar**, no borrarlas.
+  13. **El carrito necesita el radio de dirección marcado.** Con la dirección creada, el paso muestra un selector; si no se marca, el POST sale como `POST /en/order?id_address=0`, el carrito queda con `id_address_delivery = 0` y —aunque el producto esté en la base de datos— el bloque de pago nunca se renderiza. Se detectó leyendo el access log de Apache, no el HTML.
+  14. **El CLI de PrestaShop no sirve para diagnosticar el pago:** `ps_checkpayment::getTemplateVars()` llama a `formatPrice()` sobre `getCurrentLocale()`, que es `null` fuera de un controlador de front, y lanza un fatal que aborta el hook. Es un artefacto del diagnóstico por consola, no del flujo web.
 
 ## 3. Etapa 3 — API Testing (Postman/Newman)
 
@@ -165,16 +191,42 @@ Para confirmar los números se repitió la prueba 02 con el mismo plan (*corrida
 
 ### 4.3 Prueba de desempeño (2 horas, 20–50 usuarios)
 
-- Usuarios concurrentes seleccionados:
-- Duración efectiva:
-- Tendencias de tiempo de respuesta y consumo de recursos:
-- Reporte: `results/performance/`
+> Responsable: Integrante 3. Plan, comandos y criterios en [`tests/performance/endurance/README.md`](../tests/performance/endurance/README.md).
+
+- **Herramienta:** Apache JMeter 5.6.3 en modo no-GUI (Java 25), mismo escenario que las pruebas de estrés (Home → Categoría → Búsqueda → Producto → Agregar al carrito por AJAX → Ver carrito).
+- **Sistema bajo prueba:** PrestaShop 8.2 local en Docker del ADR-003 (2 CPU / 2 GB; MySQL 1 CPU / 1 GB), con el generador de carga en la misma máquina.
+- **Usuarios concurrentes seleccionados:** **30** — dentro del rango 20–50 exigido, por debajo del quiebre medido en 4.2 (~390 usuarios en rampa) pero por encima de la zona cómoda (~60), de modo que la corrida ejerce presión real sin terminar en error masivo.
+- **Duración efectiva:** **2,00 h** (120 min medidos), rampa de 2 min, pensamiento de 300–1000 ms.
+
+| Métrica | Valor |
+| --- | --- |
+| Muestras analizadas | **54.721** |
+| Errores | **405 (0,74 %)** |
+| Throughput medio | **7,6 req/s** |
+| Promedio / mediana | 3.257 / 3.064 ms |
+| p90 / p95 / p99 | 4.006 / 4.303 / 5.323 ms |
+| Máximo | 30.047 ms |
+
+- **Estabilidad:** el p95 de la primera mitad es **4.230 ms** y el de la segunda **4.220 ms** (−0,3 %); el throughput se mantiene en 8,0 req/s en ambas mitades. **No hay deriva**: de las 24 ventanas de 5 min, **22 tienen 0,00 % de error** y un promedio entre 2.411 y 3.244 ms; solo las dos del incidente se salen de ese rango.
+- **El único incidente es puntual, no progresivo:** entre los minutos 10 y 25 hay dos ventanas con 26,8 % y 18,0 % de error y p95 de 30 s (timeouts). Coincide con la regeneración de la caché de PrestaShop que se ejecutó en esa franja mientras los 30 usuarios estaban activos: el log de Apache registra errores fatales de PHP (`Cannot rename /var/www/html/var/cache/prod/translations/...`, `Call to a member function all() on bool`) en esas mismas marcas de tiempo. A partir del minuto 30 el sistema vuelve a 0 % de error y no lo repite en las dos horas restantes. Se documenta como interferencia del entorno de prueba, no como degradación del sistema; en producción la caché no se borra con la tienda bajo carga.
+- **Tendencia de recursos:** MySQL se mantiene en ~100 % de su núcleo durante toda la corrida (es el cuello de botella, igual que en 4.2) y PrestaShop entre 106 % y 119 % de sus 200 %. La memoria de PrestaShop sube de 104 MiB a 452 MiB (+333 %) y la de MySQL de 553 a 763 MiB (+38 %): crecen al principio y luego se estabilizan (se mantienen en ~484–494 MiB y ~763 MiB durante la última hora), lo que es caché y no una fuga sostenida.
+- **Cierre:** el sistema sostuvo 30 usuarios concurrentes durante 2 horas con el 99,26 % de las peticiones exitosas y sin degradación progresiva; el techo sigue siendo la CPU de MySQL.
+- **Reporte:** [`results/performance/endurance/endurance-01-dos-horas/`](../results/performance/endurance/endurance-01-dos-horas/) — `dashboard/index.html`, `resumen.md` y `recursos.csv`.
+- **Evidencias:** [`evidences/performance/endurance/`](../evidences/performance/endurance/) — salida de consola completa de JMeter.
 
 ## 5. Conclusiones
 
-- Estado general de la plataforma:
-- Riesgos encontrados:
-- Recomendaciones:
+- **Estado general de la plataforma:** estable para el flujo de negocio evaluado. Con la configuración de recursos del entorno local atiende hasta ~60 usuarios concurrentes con p95 < 1 s, se degrada desde ~190 y se quiebra desde ~390 usuarios en rampa. La prueba de 2 horas con 30 usuarios cerró con **99,26 % de peticiones exitosas y sin degradación progresiva**, lo que confirma que 30 usuarios están dentro de su capacidad sostenida.
+- **Riesgos encontrados:**
+  1. **El cuello de botella es la CPU de MySQL**, no la aplicación: se satura con ~94 usuarios y a partir de ahí el throughput se topa en ~35–60 req/s mientras la latencia crece linealmente (ley de Little: N = X·(R + Z)).
+  2. **La demo pública de PrestaShop no está disponible** (tiendas temporales en 502/timeout), lo que obliga a evaluar sobre el entorno local. Cualquier conclusión sobre el servicio público queda pendiente de que vuelva a estar operativo.
+  3. **El entorno de prueba requiere configuración manual para el pago.** Los módulos de pago se filtran por país vía `ps_module_country`, y borrar esas filas (en lugar de ajustarlas) los deja fuera del checkout sin mensaje claro: el síntoma es *"there is no payment method available"*. Queda documentado en la sección 2 para reproducir el entorno.
+- **Recomendaciones:**
+  1. Dar más CPU a MySQL o usar réplicas de lectura para el catálogo.
+  2. Activar caché de página completa o un CDN para Home y Categoría, las páginas más costosas.
+  3. Migrar Apache de `prefork` a `event` + PHP-FPM ajustando `MaxRequestWorkers`.
+  4. Poner una cola o *rate limiting* delante del checkout para absorber picos.
+  5. Ejecutar las suites móvil y de rendimiento en ventanas separadas: compartir CPU entre emulador y JMeter introduce timeouts que se confunden con degradación real (ocurrió en esta corrida, minutos 10–25).
 
 ## 6. Anexos
 
@@ -184,8 +236,14 @@ Para confirmar los números se repitió la prueba 02 con el mismo plan (*corrida
 
 ## Checklist de sustentación
 
-- [ ] Suite de las 4 etapas ejecutada sin errores de configuración.
-- [ ] Informe con resultados de las 4 etapas.
-- [ ] Reportes en `results/`.
-- [ ] Evidencias en `evidences/`.
-- [ ] Demo o video breve listo para la sustentación.
+Estado real del repositorio al cierre de esta entrega:
+
+- [ ] **Etapa 1 — Cypress:** las carpetas `tests/e2e-web/cypress/e2e/` están vacías (solo `.gitkeep`); la suite E2E aún no está en `main`.
+- [x] **Etapa 2 — Appium:** happy path de checkout completo en emulador, **5 de 5 pasos pasan**, con orden registrada en PrestaShop.
+- [x] **Etapa 3 — Postman/Newman:** 34 requests y 256 aserciones, con reporte HTML y JUnit.
+- [x] **Etapa 4 — Estrés:** 2 pruebas con resultados, dashboards y videos.
+- [x] **Etapa 4 — Desempeño (2 h):** ejecutada y documentada en la sección 4.3.
+- [ ] **Etapa 4 — Carga (10/20/50 usuarios):** `tests/performance/load/plans/` está vacía; falta la suite del Integrante 1.
+- [x] Reportes y evidencias de las etapas 2, 3 y de estrés y desempeño en `results/` y `evidences/`.
+- [ ] Demo o video breve de la ejecución.
+- [ ] Completar los datos de equipo, integrantes y fecha en «Datos generales».

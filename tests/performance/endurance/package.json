@@ -1,0 +1,10 @@
+{
+  "name": "reto-final-endurance-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Etapa 4 — Prueba de desempeño de 2 horas con Apache JMeter (Reto Final Electiva I)",
+  "scripts": {
+    "test": "node scripts/run-endurance.js",
+    "test:ci": "node scripts/run-endurance.js --users=20 --duration=7200"
+  }
+}
