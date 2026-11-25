@@ -1,6 +1,6 @@
 # Etapa 4 — Pruebas de rendimiento
 
-Evaluación del comportamiento no funcional de **PrestaShop Demo** (<https://demo.prestashop.com/>), la plataforma seleccionada en la Etapa 1. La herramienta elegida para las pruebas de carga es **Apache JMeter**.
+Evaluación del comportamiento no funcional de **Practice Software Testing / Toolshop** (<https://practicesoftwaretesting.com/>), usada como alternativa práctica porque el demo de PrestaShop presentó inestabilidad/caídas. La herramienta elegida para las pruebas de carga es **Apache JMeter**.
 
 > Los planes y reportes se organizan por subtipo de prueba, no por herramienta ni por integrante.
 

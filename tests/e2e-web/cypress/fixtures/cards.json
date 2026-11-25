@@ -1,0 +1,14 @@
+{
+  "valid": {
+    "number": "4242424242424242",
+    "expiry": "12/30",
+    "cvv": "123",
+    "holder": "QA PrestaShop"
+  },
+  "invalid": {
+    "number": "1234",
+    "expiry": "01/20",
+    "cvv": "1",
+    "holder": "QA PrestaShop"
+  }
+}
